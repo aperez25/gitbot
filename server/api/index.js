@@ -2,12 +2,12 @@ const router = require('express').Router()
 const apiai = require('apiai');
 const octokat = require('octokat')
 const apiaiRouter = apiai(process.env.APIAI_CLIENT_ACCESS_TOKEN)
-const gitHubId = process.env.GH_CLIENT_ID
-const gitHubSecret = process.env.GH_CLIENT_SECRET
-const gitHubToken = process.env.GH_TOKEN
-const octo = new octokat({
-	token: gitHubToken
-})
+// const gitHubId = process.env.GH_CLIENT_ID
+// const gitHubSecret = process.env.GH_CLIENT_SECRET
+// const gitHubToken = process.env.GH_TOKEN
+// const octo = new octokat({
+// 	token: gitHubToken
+// })
 
 
 // var request = apiaiRouter.textRequest('What is git?', {
