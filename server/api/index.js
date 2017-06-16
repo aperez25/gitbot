@@ -38,18 +38,18 @@ function ask(text, options) {
 	})
 }
 
-function getAllIntents(options) {
-	return new Promise((resolve, reject) => {
-		let request = apiaiRouter.intentGetRequest(options);
-		request.on('response', (response) => {
-			return resolve(response);
-		});
-		request.on('error', (error) => {
-			return reject(error);
-		});
-		request.end();
-	})
-}
+// function getAllIntents(options) {
+// 	return new Promise((resolve, reject) => {
+// 		let request = apiaiRouter.intentGetRequest(options);
+// 		request.on('response', (response) => {
+// 			return resolve(response);
+// 		});
+// 		request.on('error', (error) => {
+// 			return reject(error);
+// 		});
+// 		request.end();
+// 	})
+// }
 
 // ask something
 ask('<Your text query>')
@@ -59,13 +59,13 @@ ask('<Your text query>')
 		console.log(error)
 	});
 
-// get list of all intents
-getAllIntents()
-	.then(intents => {
-		console.log(intents);
-	}).catch(error => {
-		console.log(error)
-	});
+// // get list of all intents
+// getAllIntents()
+// 	.then(intents => {
+// 		console.log(intents);
+// 	}).catch(error => {
+// 		console.log(error)
+// 	});
 
 router.use(function (req, res, next) {
   const err = new Error('Not found.');
