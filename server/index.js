@@ -3,7 +3,8 @@ const app = express()
 const path = require('path')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
-const env = require('dotenv').config()
+const dotenv = require('dotenv').config()
+
 app.use(morgan('dev'))
 
 app.use(function (err, req, res, next) {
