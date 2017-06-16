@@ -1,9 +1,14 @@
 const router = require('express').Router()
-const token = require('../../.config')
+const env = require('../../.config')
+const apiai = require('apiai');
+const apiaiRouter = apiai(env.APIAI_CLIENT_ACCESS)
+const gitHubId = env.GH_CLIENT_ID
+const gitHubSecret = env.GH_CLIENT_SECRET
+const gitHubToken = env.GH_TOKEN
+const octo = new Octokat({
+	token: gitHubToken
+})
 
-var apiai = require('apiai');
-
-var apiaiRouter = apiai(token.APIAI_CLIENT_ACCESS_TOKEN);
 
 // var request = apiaiRouter.textRequest('What is git?', {
 //     sessionId: '304'

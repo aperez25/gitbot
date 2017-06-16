@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack -w & nodemon server/index.js",
-    "postinstall": "npm run webpack"
+    "postinstall": "webpack"
   },
   "keywords": [
     "git",
@@ -19,17 +19,26 @@
     "babel-core": "^6.25.0",
     "babel-loader": "^7.0.0",
     "babel-preset-react": "^6.24.1",
-    "webpack": "^2.6.1",
     "body-parser": "^1.17.2",
+    "bootstrap": "^3.3.7",
+    "bootstrap-social": "^5.1.1",
+    "css-loader": "^0.28.4",
     "express": "^4.15.3",
+    "font-awesome": "^4.7.0",
+    "jquery": "^3.2.1",
     "morgan": "^1.8.2",
+    "node-sass": "^4.5.3",
+    "octokat": "^0.9.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-redux": "^5.0.5",
     "react-router": "^4.1.1",
     "redux": "^3.6.0",
     "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.18.2",
+    "webpack": "^2.6.1"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
