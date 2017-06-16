@@ -16,14 +16,6 @@ module.exports = {
         }
       },
       // use the style-loader/css-loader/sass-loader combos for anything matching the .scss extension
-      {
-        test: /\.scss$/,
-        use: [
-          'style-loader',
-          'css-loader',
-          'sass-loader'
-        ]
-      }
     ]
   }
 }
