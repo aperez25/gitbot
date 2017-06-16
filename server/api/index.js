@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const env = require('../../.config')
+// const env = require('../../.config')
 const apiai = require('apiai');
 const octokat = require('octokat')
 const apiaiRouter = apiai(env.APIAI_CLIENT_ACCESS_TOKEN)
