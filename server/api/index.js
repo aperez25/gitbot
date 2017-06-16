@@ -1,11 +1,10 @@
 const router = require('express').Router()
-// const env = require('../../.config')
 const apiai = require('apiai');
 const octokat = require('octokat')
-const apiaiRouter = apiai(env.APIAI_CLIENT_ACCESS_TOKEN)
-const gitHubId = env.GH_CLIENT_ID
-const gitHubSecret = env.GH_CLIENT_SECRET
-const gitHubToken = env.GH_TOKEN
+const apiaiRouter = apiai(process.env.APIAI_CLIENT_ACCESS_TOKEN)
+const gitHubId = process.env.GH_CLIENT_ID
+const gitHubSecret = process.env.GH_CLIENT_SECRET
+const gitHubToken = process.env.GH_TOKEN
 const octo = new octokat({
 	token: gitHubToken
 })
