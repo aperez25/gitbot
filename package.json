@@ -2,11 +2,18 @@
   "name": "gitbot",
   "version": "1.0.0",
   "description": "a bot to help with git and github",
-  "main": "index.js",
+  "main": "server/index.js",
+  "engines": {
+    "node": ">= 7.0.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack -w & nodemon server/index.js",
     "postinstall": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aperez25/gitbot"
   },
   "keywords": [
     "git",
