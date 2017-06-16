@@ -1,5 +1,5 @@
-// const dummyReducer (state = {}, action) {
-//   return state;
-// }
+const dummyReducer = (state = {}, action) => {
+  return state;
+}
 
-// export default dummyReducer;
+export default dummyReducer;
