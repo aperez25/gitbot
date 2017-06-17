@@ -69,9 +69,9 @@ router.post('/webhook', (req, res, next) => {
 					email = commit.author.email
 					date = new Date(commit.author.date),
 					message = commit.message
-					url = commit.url
+					url = commit.htmlurl
 		return `The last commit was made by ${author} on ${date}, with
-		the message: ${message}. You can find more details here: ${url}`
+		the message: '${message}'. You can find more details here: ${url}`
 	})
 	// send a response back to slack
 	.then(lastCommit => {
