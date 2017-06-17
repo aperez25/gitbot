@@ -52,14 +52,15 @@ status: { code: 200, errorType: 'success' },
 */
 
 router.post('/webhook', (req, res, next) => {
-	if (req.body.command === '/gitlastcommit') {
+	// if (req.body.command === '/gitlastcommit') {
+	console.log('~~~~HERE IS THE REQ BODY: ', req.body)
 	const gitRequest = req.body.text.split(' ')
 	// capture the username & reponame
 	const userName = gitRequest[0]
 	const repoName = gitRequest[1]
 	// fetches the repo's commit history
 	octo.repos(userName, repoName)
-	.commits.fetch()
+	.commits.fetch({"sha": "master"})
 	//get the data we need
 	.then(response => {
 		const author = response.commit.author.name,
@@ -75,8 +76,8 @@ router.post('/webhook', (req, res, next) => {
 		return res.json({text: lastCommit})
 	})
 	.catch(next)
-}
-	else res.json({text: 'Error! Try a different command!'})
+// }
+// 	else res.json({text: 'Error! Try a different command!'})
 })
 
 
