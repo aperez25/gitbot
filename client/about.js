@@ -4,7 +4,7 @@ const About = () => (
     <div>
       <h1 className="header">Hi, I'm GitBot!</h1>
         <h2> Chat or talk with me about Git and GitHub</h2>
-        <p> Can't get enough? Add me to your Slack channel...I'm a lot more fun there!</p>
+        <p> Add me to your Slack channel...I'm a lot more fun there!</p>
         <p>Here are some things I can do:</p>
         <ul>
           <li>Answer your questions</li>
