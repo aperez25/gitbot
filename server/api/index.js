@@ -51,8 +51,7 @@ status: { code: 200, errorType: 'success' },
 
 */
 
-
-app.post('/webhook', (req, res, next) => {
+router.post('/webhook', (req, res, next) => {
 	if (req.body.command === '/gitlastcommit') {
 	const gitRequest = req.body.text.split(' ')
 	// capture the username & reponame
