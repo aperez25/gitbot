@@ -11,7 +11,7 @@ const apiaiRouter = apiai(process.env.APIAI_CLIENT_ACCESS_TOKEN)
 // })
 
 router
-.post('/webook', (req, res, next) => {
+.post('/webhook', (req, res, next) => {
 	console.log(req)
 })
 // var request = apiaiRouter.textRequest('What is git?', {
