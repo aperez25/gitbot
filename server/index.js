@@ -22,7 +22,7 @@ app.use(express.static(path.join(__dirname,
 app.use('/api', require('./api'))
 
 app.post('/webhook', (req, res, next) => {
-	console.log('REQUEST: ', req, req.body)
+	console.log('REQUEST: ', req.body)
 	return res.json({ text: "Message received" })
 })
 
