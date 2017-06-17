@@ -64,11 +64,12 @@ router.post('/webhook', (req, res, next) => {
 	//get the data we need
 	.then(response => {
 		console.log(response)
-		const author = response.commit.author.name,
-					email = response.commit.author.email
-					date = new Date(response.commit.author.date),
-					message = response.commit.message
-					url = response.commit.url
+		const commit = response.items[0]
+		const author = commit.author.name,
+					email = commit.author.email
+					date = new Date(commit.author.date),
+					message = commit.message
+					url = commit.url
 		return `The last commit was made by ${author} on ${date}, with
 		the message: ${message}. You can find more details here: ${url}`
 	})
@@ -97,58 +98,58 @@ router.post('/webhook', (req, res, next) => {
 
 // request.end();
 
-function ask(text, options) {
-	return new Promise((resolve, reject) => {
-		var defaultOptions = {
-			sessionId: '500', // use any arbitrary id - doesn't matter
-		};
-
-		let request = apiaiRouter.textRequest(text, Object.assign(defaultOptions, options));
-		request.on('response', (response) => {
-			return resolve(response);
-		});
-
-		request.on('error', (error) => {
-			return reject(error);
-		});
-
-		request.end();
-	})
-}
-
-// function getAllIntents(options) {
+// function ask(text, options) {
 // 	return new Promise((resolve, reject) => {
-// 		let request = apiaiRouter.intentGetRequest(options);
+// 		var defaultOptions = {
+// 			sessionId: '500', // use any arbitrary id - doesn't matter
+// 		};
+
+// 		let request = apiaiRouter.textRequest(text, Object.assign(defaultOptions, options));
 // 		request.on('response', (response) => {
 // 			return resolve(response);
 // 		});
+
 // 		request.on('error', (error) => {
 // 			return reject(error);
 // 		});
+
 // 		request.end();
 // 	})
 // }
 
-// ask something
-ask('What are SSH Keys?')
-	.then(response => {
-		console.log(response);
-	}).catch(error => {
-		console.log(error)
-	});
+// // function getAllIntents(options) {
+// // 	return new Promise((resolve, reject) => {
+// // 		let request = apiaiRouter.intentGetRequest(options);
+// // 		request.on('response', (response) => {
+// // 			return resolve(response);
+// // 		});
+// // 		request.on('error', (error) => {
+// // 			return reject(error);
+// // 		});
+// // 		request.end();
+// // 	})
+// // }
 
-// // get list of all intents
-// getAllIntents()
-// 	.then(intents => {
-// 		console.log(intents);
+// // ask something
+// ask('What are SSH Keys?')
+// 	.then(response => {
+// 		console.log(response);
 // 	}).catch(error => {
 // 		console.log(error)
 // 	});
 
-router.use(function (req, res, next) {
-  const err = new Error('Not found.');
-  err.status = 404;
-  next(err);
-})
+// // // get list of all intents
+// // getAllIntents()
+// // 	.then(intents => {
+// // 		console.log(intents);
+// // 	}).catch(error => {
+// // 		console.log(error)
+// // 	});
+
+// router.use(function (req, res, next) {
+//   const err = new Error('Not found.');
+//   err.status = 404;
+//   next(err);
+// })
 
 module.exports = router
