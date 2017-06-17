@@ -58,7 +58,7 @@ router.post('/webhook', (req, res, next) => {
 	const userName = gitRequest[0]
 	const repoName = gitRequest[1]
 	// fetches the repo's commit history
-	repoActivity = octo.repos(userName, repoName)
+	octo.repos(userName, repoName)
 	.commits.fetch()
 	//get the data we need
 	.then(response => {
@@ -73,7 +73,9 @@ router.post('/webhook', (req, res, next) => {
 	// send a response back to slack
 	.then(lastCommit => {
 		return res.json({text: lastCommit})
-	})}
+	})
+	.catch(next)
+}
 	else res.json({text: 'Error! Try a different command!'})
 })
 
