@@ -51,9 +51,7 @@ status: { code: 200, errorType: 'success' },
 
 */
 
-router.post('/webhook', (req, res, next) => {
-	// if (req.body.command === '/gitlastcommit') {
-	console.log('~~~~HERE IS THE REQ BODY: ', req.body)
+router.post('/gitlastcommit', (req, res, next) => {
 	const gitRequest = req.body.text.split(' ')
 	// capture the username & reponame
 	const userName = gitRequest[0]
@@ -69,8 +67,8 @@ router.post('/webhook', (req, res, next) => {
 					email = commit.author.email
 					date = new Date(commit.author.date),
 					message = commit.message
-					url = commit.htmlurl
-		return `The last commit was made by ${author} on ${date}, with
+					url = response.items[0].htmlurl
+		return `The last commit was made by ${author} on <!date${date}|${date}>, with
 		the message: '${message}'. You can find more details here: ${url}`
 	})
 	// send a response back to slack
@@ -78,8 +76,28 @@ router.post('/webhook', (req, res, next) => {
 		return res.json({text: lastCommit})
 	})
 	.catch(next)
-// }
-// 	else res.json({text: 'Error! Try a different command!'})
+})
+
+router.post('/gitrefs', (req, res, next) => {
+	// if (req.body.command === '/gitlastcommit') {
+	const gitRequest = req.body.text.split(' ')
+	// capture the username & reponame
+	const userName = gitRequest[0]
+	const repoName = gitRequest[1]
+	// fetches the repo's commit history
+	octo.repos(userName, repoName)
+	.git.refs.fetch()
+	//get the data we need
+	.then(response => {
+		console.log(response)
+		const refs = response.items.map(item => `[${item.ref}](${item.url})`)
+		return 'Here is a list of the current branches: ' + refs.join('\n')
+	})
+	// send a response back to slack
+	.then(listOfRefs => {
+		return res.json({text: listOfRefs})
+	})
+	.catch(next)
 })
 
 
