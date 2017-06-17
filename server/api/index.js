@@ -63,6 +63,7 @@ router.post('/webhook', (req, res, next) => {
 	.commits.fetch({"sha": "master"})
 	//get the data we need
 	.then(response => {
+		console.log(response)
 		const author = response.commit.author.name,
 					email = response.commit.author.email
 					date = new Date(response.commit.author.date),
