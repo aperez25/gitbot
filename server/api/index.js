@@ -53,7 +53,7 @@ status: { code: 200, errorType: 'success' },
 
 
 app.post('/webhook', (req, res, next) => {
-	if (req.body.command === '/gitlastcommit')
+	if (req.body.command === '/gitlastcommit') {
 	const gitRequest = req.body.text.split(' ')
 	// capture the username & reponame
 	const userName = gitRequest[0]
@@ -74,7 +74,8 @@ app.post('/webhook', (req, res, next) => {
 	// send a response back to slack
 	.then(lastCommit => {
 		return res.json({text: lastCommit})
-	})
+	})}
+	else res.json({text: 'Error! Try a different command!'})
 })
 
 
