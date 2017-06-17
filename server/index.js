@@ -21,6 +21,11 @@ app.use(express.static(path.join(__dirname,
 
 app.use('/api', require('./api'))
 
+app.post('/webhook', (req, res, next) => {
+	console.log('REQUEST: ', req, req.body)
+	return req
+})
+
 app.get('*', function (req, res) {
   res.sendFile(path.join(__dirname, '../public'))
 });
