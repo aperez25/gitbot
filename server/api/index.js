@@ -3,17 +3,82 @@ const apiai = require('apiai');
 const octokat = require('octokat')
 const apiaiRouter = apiai(process.env.APIAI_CLIENT_ACCESS_TOKEN)
 
-// const gitHubId = process.env.GH_CLIENT_ID
-// const gitHubSecret = process.env.GH_CLIENT_SECRET
-// const gitHubToken = process.env.GH_TOKEN
-// const octo = new octokat({
-// 	token: gitHubToken
-// })
-
-router.post('/webhook', (req, res, next) => {
-	console.log('REQUEST: ', req, req.body)
-	return res.json({ text: "Message received" })
+const gitHubId = process.env.GH_CLIENT_ID
+const gitHubSecret = process.env.GH_CLIENT_SECRET
+const gitHubToken = process.env.GH_TOKEN
+const octo = new octokat({
+	token: gitHubToken
 })
+
+/*
+REQUEST:  { originalRequest:
+   { source: 'slack',
+     data:
+      { authed_users: [Object],
+        event_id: 'Ev5VAFB84C',
+        api_app_id: 'A5UK39MGT',
+        team_id: 'T5UNPJXTN',
+        event: [Object],
+        type: 'event_callback',
+        event_time: 1497677339,
+        token: '1FidgJHI5DKFMw4K7y0auXgh' } },
+  id: '81fd55d3-605c-4890-b906-59318f3f5d19',
+  timestamp: '2017-06-17T05:29:00.563Z',
+  lang: 'en',
+  result:
+   { source: 'agent',
+     resolvedQuery: 'aperez25',
+     speech: '',
+     action: 'find_commits_by_date',
+     actionIncomplete: false,
+     parameters:
+      { date: 'today',
+        number: '',
+        project: 'what was the last commit for guessing-game',
+        username: 'aperez25' },
+     contexts: [],
+     metadata:
+      { intentId: '52b876ed-7a75-4619-bc76-9d1c58ec0e6d',
+        webhookUsed: 'true',
+        webhookForSlotFillingUsed: 'true',
+        intentName: 'Get last project commit' },
+     fulfillment:
+      { speech: 'Doesn\'t seem like GitHub is responding right now :(',
+    messages: [Object] },
+ score: 1 },
+status: { code: 200, errorType: 'success' },
+  sessionId: 'e16420b0-5639-4fea-94ea-3dd50207667b' }
+
+*/
+
+
+app.post('/webhook', (req, res, next) => {
+	if (req.body.command === '/gitlastcommit')
+	const gitRequest = req.body.text.split(' ')
+	// capture the username & reponame
+	const userName = gitRequest[0]
+	const repoName = gitRequest[1]
+	// fetches the repo's commit history
+	repoActivity = octo.repos(userName, repoName)
+	.commits.fetch()
+	//get the data we need
+	.then(response => {
+		const author = response.commit.author.name,
+					email = response.commit.author.email
+					date = new Date(response.commit.author.date),
+					message = response.commit.message
+					url = response.commit.url
+		return `The last commit was made by ${author} on ${date}, with
+		the message: ${message}. You can find more details here: ${url}`
+	})
+	// send a response back to slack
+	.then(lastCommit => {
+		return res.json({text: lastCommit})
+	})
+})
+
+
+
 // var request = apiaiRouter.textRequest('What is git?', {
 //     sessionId: '304'
 // });
