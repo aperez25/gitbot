@@ -10,10 +10,9 @@ const apiaiRouter = apiai(process.env.APIAI_CLIENT_ACCESS_TOKEN)
 // 	token: gitHubToken
 // })
 
-router
-.post('/webhook', (req, res, next) => {
+router.post('/webhook', (req, res, next) => {
 	console.log('REQUEST: ', req, req.body)
-	return req
+	return res.json({ text: "Message received" })
 })
 // var request = apiaiRouter.textRequest('What is git?', {
 //     sessionId: '304'

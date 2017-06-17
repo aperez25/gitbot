@@ -23,7 +23,7 @@ app.use('/api', require('./api'))
 
 app.post('/webhook', (req, res, next) => {
 	console.log('REQUEST: ', req, req.body)
-	return req
+	return res.json({ text: "Message received" })
 })
 
 app.get('*', function (req, res) {
