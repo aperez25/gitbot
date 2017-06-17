@@ -64,7 +64,7 @@ router.post('/webhook', (req, res, next) => {
 	//get the data we need
 	.then(response => {
 		console.log(response)
-		const commit = response.items[0]
+		const commit = response.items[0].commit
 		const author = commit.author.name,
 					email = commit.author.email
 					date = new Date(commit.author.date),
