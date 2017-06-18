@@ -56,7 +56,11 @@ router
 		const refs = response.items.filter(item => {
 			if (item.ref.startsWith('refs/heads'))
 			return item
-		}).map(filteredItems => `<${filteredItems.url}|${filteredItems.ref.split('/')[3]}>`)
+		}).map(filteredItems => {
+			itemRef = filteredItems.ref.split('/')
+			itemName = itemRef[3] ? itemRef[3] : itemRef[2]
+			`<${filteredItems.url}|${itemName}>`
+		})
 
 		const listOfRefs = `Here is a list of ${repoName}\'s current branches:\n' + ${refs.join('\n')}`
 	// send a response back to slack
@@ -81,7 +85,7 @@ router
 		const searchItems = []
 		for (var i = 1; i <= 5; i++) {
 			const item = ({
-				description: searchResults.items[i].description,
+				fullName: searchResults.items[i].fullName,
 				// homepage: searchResults.items[i].homepage,
 				htmlUrl: searchResults.items[i].htmlUrl,
 				forks: searchResults.items[i].forks,
@@ -89,10 +93,10 @@ router
 				lastUpdated: new Date(searchResults.items[i].updatedAt),
 				unixDate: new Date(searchResults.items[i].updatedAt).getTime() / 1000
 			})
-			searchItems.push(`${i}. <${item.htmlUrl}|${item.description}>: ${item.forks} forks,  language: ${item.language}, last updated: <!date^${item.unixDate}^{date_short_pretty}|${item.lastUpdated}>`)
+			searchItems.push(`${i}. <${item.htmlUrl}|${item.fullName}>: ${item.forks} forks,  language: ${item.language}, last updated: <!date^${item.unixDate}^{date_short_pretty}|${item.lastUpdated}>`)
 		}
 
-		const searchText = `For your search on ${req.body.text}, there are ${searchResults.totalCount} results. The first five are:\n + ${searchItems.join('\n')}\n<${searchResults.url}|Search through all results here.>`
+		const searchText = `For your search *${req.body.text}*, there are *${searchResults.totalCount}* results. The first five are:\n + ${searchItems.join('\n')}\n<https://github.com${searchResults.url}|Search through all results here.>`
 		// response back to Slack
 		res.send({text: searchText, channel: slackChannel, response_type: 'in_channel'})
 	})
