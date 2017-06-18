@@ -12,7 +12,7 @@ const octo = new octokat({
 
 router
 
-.post('/gitlastcommit', (req, res, next) => {
+.post('/gitcommit', (req, res, next) => {
 	console.log('~~~~~~HERE IS THE BODY ~~~~~: ', req.body)
 	const slackChannel = req.body.channel_id
 	const gitRequest = req.body.text.split(' ')
@@ -64,7 +64,7 @@ router
 	.catch(next)
 })
 
-.post('/repos', (req, res, next) => {
+.post('/searchrepos', (req, res, next) => {
 	const slackChannel = req.body.channel_id,
 	repoRequest = req.body.text.split(', '),
 	gitHubSearch = repoRequest[0],
