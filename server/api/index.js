@@ -52,12 +52,11 @@ router.post('/gitrefs', (req, res, next) => {
 	//get the data we need
 	.then(response => {
 		console.log(response)
-		const refs = response.items.map(item => {`*${item.ref}*: ${item.url}`})
-		return 'Here is a list of the current branches: ' + refs.join('\n')
-	})
+		// order the references
+		const refs = response.items.map(item => `*${item.ref}*: ${item.url}`)
+		const listOfRefs = 'Here is a list of the current references: ' + refs.join('\n')
 	// send a response back to slack
-	.then(listOfRefs => {
-		return res.send({"text": listOfRefs, "mrkdown_in": ["text"]})
+		res.send({"text": listOfRefs, "mrkdown_in": ["text"]})
 	})
 	.catch(next)
 })
