@@ -33,7 +33,7 @@ router
 					message = commit.message
 					//link if broken
 					url = response.items[0].htmlUrl
-		const lastCommit = `<${url}|The last commit> was made by ${author} on <!date^${unixDate}^{date} at {time}|${date}>, with the message: '${message}'.`
+		const lastCommit = `<${url}|The last commit> was made by ${author} on <!date^${unixDate}^{date_short_pretty}|${date}>, with the message: '${message}'.`
 		return res.send({text: lastCommit, channel: slackChannel, response_type: 'in_channel' })
 	})
 	.catch(next)
@@ -56,7 +56,8 @@ router
 		const refs = response.items.filter(item => {
 			if (item.ref.startsWith('refs/heads'))
 			itemName = item.ref.split('/')[3]
-			return `<${item.url}|${itemName}>`})
+			return `<${item.url}|${itemName}>`
+		})
 		const listOfRefs = `Here is a list of ${repoName}\'s current branches:\n' + ${refs.join('\n')}`
 	// send a response back to slack
 		res.send({text: listOfRefs, channel: slackChannel, response_type: 'in_channel'})
@@ -85,12 +86,13 @@ router
 				htmlUrl: searchResults.items[i].htmlUrl,
 				forks: searchResults.items[i].forks,
 				language: searchResults.items[i].language,
-				lastUpdated: new Date(searchResults.items[i].updatedAt)
+				lastUpdated: new Date(searchResults.items[i].updatedAt),
+				unixDate: item.lastUpdated.getTime() / 1000
 			})
-			searchItems.push(`${i}. <${item.htmlUrl}|${item.description}> has ${item.forks} forks and is written in ${item.language}. Last updated: ${item.lastUpdated}`)
+			searchItems.push(`${i}. <${item.htmlUrl}|${item.description}>: ${item.forks} forks,  language: ${item.language}, last updated: <!date^${unixDate}^{date_short_pretty}|${date}>`)
 		}
 
-		const searchText = `For your search on ${req.body.text}, there are ${searchResults.totalCount} searchResultsults. The first five are:\n + ${searchItems.join('\n')}\n<${res.url}|Search through all results here.>`
+		const searchText = `For your search on ${req.body.text}, there are ${searchResults.totalCount} results. The first five are:\n + ${searchItems.join('\n')}\n<${searchResults.url}|Search through all results here.>`
 		// response back to Slack
 		res.send({text: searchText, channel: slackChannel, response_type: 'in_channel'})
 	})
