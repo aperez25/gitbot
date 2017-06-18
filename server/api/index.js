@@ -87,7 +87,7 @@ router
 				language: res.items[i].language,
 				lastUpdated: res.items[i].updatedAt
 			})
-			itemResults.push(`${i}. <${item.htmlUrl}|${item.description}> has ${item.forks} forks and is written in ${language}. Last updated: ${new Date(item.lastUpdated)}`)
+			itemResults.push(`${i}. <${item.htmlUrl}|${item.description}> has ${item.forks} forks and is written in ${item.language}. Last updated: ${new Date(item.lastUpdated)}`)
 		}
 
 		const searchText = `For your search on ${req.body.text}, there are ${res.totalCount} results. The first five are:\n + ${itemResults.join('\n')}\n<${res.url}|Search through all results here.>`
