@@ -30,9 +30,9 @@ router.post('/gitlastcommit', (req, res, next) => {
 					message = commit.message
 					//link if broken
 					url = response.items[0].htmlUrl
-		const lastCommit = `The last commit was made by ${author} on <!date${date}|${date}>, with
-		the message: '${message}'. You can find more details here: ${url}`
-		return res.send({text: lastCommit, mrkdown_in: ["text"], channel: slackChannel})
+		const lastCommit = `<${url}|The last commit> was made by ${author} on <!date${date}|${date}>, with
+		the message: '${message}'.`
+		return res.send({text: lastCommit, icon_emoji: 'robot_face', channel: slackChannel })
 	})
 	.catch(next)
 })
@@ -51,10 +51,10 @@ router.post('/gitrefs', (req, res, next) => {
 	.then(response => {
 		// console.log(response)
 		// order the references
-		const refs = response.items.map(item => `*${item.ref}*: ${item.url}`)
+		const refs = response.items.map(item => `<${item.url}|${item.ref}>`)
 		const listOfRefs = 'Here is a list of the current references: ' + refs.join('\n')
 	// send a response back to slack
-		res.send({"text": listOfRefs, "mrkdown_in": ["text"], channel: slackChannel})
+		res.send({text: listOfRefs, channel: slackChannel})
 	})
 	.catch(next)
 })
