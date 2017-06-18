@@ -26,12 +26,11 @@ router.post('/gitlastcommit', (req, res, next) => {
 		const commit = response.items[0].commit
 		const author = commit.author.name,
 					email = commit.author.email
-					date = commit.author.date,
+					date = new Date(commit.author.date).getTime(),
 					message = commit.message
 					//link if broken
 					url = response.items[0].htmlUrl
-		const lastCommit = `<${url}|The last commit> was made by ${author} on <!date^${date}^{date_pretty} at {time}|${new Date(date)}>, with
-		the message: '${message}'.`
+		const lastCommit = `<${url}|The last commit> was made by ${author} on <!date^${date}^{date_pretty} at {time}|${date}>, with the message: '${message}'.`
 		return res.send({text: lastCommit, channel: slackChannel, response_type: 'in_channel' })
 	})
 	.catch(next)
