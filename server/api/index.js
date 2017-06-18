@@ -76,21 +76,21 @@ router
 		language: searchLanguage,
 		topic: searchTopics
 	})
-	.then(res => {
-		const itemResults = []
+	.then(searchResults => {
+		const searchItems = []
 		for (var i = 1; i <= 5; i++) {
 			const item = ({
-				description: res.items[i].description,
-				// homepage: res.items[i].homepage,
-				htmlUrl: res.items[i].htmlUrl,
-				forks: res.items[i].forks,
-				language: res.items[i].language,
-				lastUpdated: res.items[i].updatedAt
+				description: searchResults.items[i].description,
+				// homepage: searchResults.items[i].homepage,
+				htmlUrl: searchResults.items[i].htmlUrl,
+				forks: searchResults.items[i].forks,
+				language: searchResults.items[i].language,
+				lastUpdated: searchResults.items[i].updatedAt
 			})
-			itemResults.push(`${i}. <${item.htmlUrl}|${item.description}> has ${item.forks} forks and is written in ${item.language}. Last updated: ${new Date(item.lastUpdated)}`)
+			searchItems.push(`${i}. <${item.htmlUrl}|${item.description}> has ${item.forks} forks and is written in ${item.language}. Last updated: ${new Date(item.lastUpdated)}`)
 		}
 
-		const searchText = `For your search on ${req.body.text}, there are ${res.totalCount} results. The first five are:\n + ${itemResults.join('\n')}\n<${res.url}|Search through all results here.>`
+		const searchText = `For your search on ${req.body.text}, there are ${res.totalCount} results. The first five are:\n + ${searchItems.join('\n')}\n<${res.url}|Search through all results here.>`
 		// response back to Slack
 		res.send({text: searchText, channel: slackChannel, response_type: 'in_channel'})
 	})
