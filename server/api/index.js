@@ -11,47 +11,11 @@ const octo = new octokat({
 })
 
 /*
-REQUEST:  { originalRequest:
-   { source: 'slack',
-     data:
-      { authed_users: [Object],
-        event_id: 'Ev5VAFB84C',
-        api_app_id: 'A5UK39MGT',
-        team_id: 'T5UNPJXTN',
-        event: [Object],
-        type: 'event_callback',
-        event_time: 1497677339,
-        token: '1FidgJHI5DKFMw4K7y0auXgh' } },
-  id: '81fd55d3-605c-4890-b906-59318f3f5d19',
-  timestamp: '2017-06-17T05:29:00.563Z',
-  lang: 'en',
-  result:
-   { source: 'agent',
-     resolvedQuery: 'aperez25',
-     speech: '',
-     action: 'find_commits_by_date',
-     actionIncomplete: false,
-     parameters:
-      { date: 'today',
-        number: '',
-        project: 'what was the last commit for guessing-game',
-        username: 'aperez25' },
-     contexts: [],
-     metadata:
-      { intentId: '52b876ed-7a75-4619-bc76-9d1c58ec0e6d',
-        webhookUsed: 'true',
-        webhookForSlotFillingUsed: 'true',
-        intentName: 'Get last project commit' },
-     fulfillment:
-      { speech: 'Doesn\'t seem like GitHub is responding right now :(',
-    messages: [Object] },
- score: 1 },
-status: { code: 200, errorType: 'success' },
-  sessionId: 'e16420b0-5639-4fea-94ea-3dd50207667b' }
 
 */
 
 router.post('/gitlastcommit', (req, res, next) => {
+	console.log('~~~~~~HERE IS THE BODY ~~~~~: ', req.body)
 	const gitRequest = req.body.text.split(' ')
 	// capture the username & reponame
 	const userName = gitRequest[0]
@@ -61,20 +25,17 @@ router.post('/gitlastcommit', (req, res, next) => {
 	.commits.fetch({"sha": "master"})
 	//get the data we need
 	.then(response => {
-		console.log(response)
+		// console.log(response)
 		const commit = response.items[0].commit
 		const author = commit.author.name,
 					email = commit.author.email
 					date = new Date(commit.author.date),
 					message = commit.message
 					//link if broken
-					url = response.items[0].htmlurl
-		return `The last commit was made by ${author} on <!date${date}|${date}>, with
+					url = response.items[0].htmlUrl
+		const lastCommit = `The last commit was made by ${author} on <!date${date}|${date}>, with
 		the message: '${message}'. You can find more details here: ${url}`
-	})
-	// send a response back to slack
-	.then(lastCommit => {
-		return res.send({text: lastCommit})
+		return res.send({"text": lastCommit, "mrkdown_in": ["text"]})
 	})
 	.catch(next)
 })
@@ -91,12 +52,12 @@ router.post('/gitrefs', (req, res, next) => {
 	//get the data we need
 	.then(response => {
 		console.log(response)
-		const refs = response.items.map(item => `[${item.ref}](${item.url})`)
+		const refs = response.items.map(item => {`*${item.ref}*: ${item.url}`})
 		return 'Here is a list of the current branches: ' + refs.join('\n')
 	})
 	// send a response back to slack
 	.then(listOfRefs => {
-		return res.send({text: listOfRefs})
+		return res.send({"text": listOfRefs, "mrkdown_in": ["text"]})
 	})
 	.catch(next)
 })
