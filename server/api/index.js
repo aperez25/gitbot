@@ -33,7 +33,7 @@ router
 					message = commit.message
 					//link if broken
 					url = response.items[0].htmlUrl
-		const lastCommit = `<${url}|The last commit> was made by ${author} on <!date^${unixDate}^{date_short_pretty}|${date}>, with the message: '${message}'.`
+		const lastCommit = `<${url}|The last commit> was made <!date^${unixDate}^{date_short_pretty}|${date}>, by ${author}: '${message}'.`
 		return res.send({text: lastCommit, channel: slackChannel, response_type: 'in_channel' })
 	})
 	.catch(next)
@@ -53,7 +53,7 @@ router
 	.then(response => {
 		// console.log(response)
 		// order the references
-		const refs = response.items.filter(item => {
+		const refs = response.items.map(item => {
 			if (item.ref.startsWith('refs/heads'))
 			itemName = item.ref.split('/')[3]
 			return `<${item.url}|${itemName}>`
@@ -87,7 +87,7 @@ router
 				forks: searchResults.items[i].forks,
 				language: searchResults.items[i].language,
 				lastUpdated: new Date(searchResults.items[i].updatedAt),
-				unixDate: item.lastUpdated.getTime() / 1000
+				unixDate: new Date(searchResults.items[i].updatedAt).getTime() / 1000
 			})
 			searchItems.push(`${i}. <${item.htmlUrl}|${item.description}>: ${item.forks} forks,  language: ${item.language}, last updated: <!date^${unixDate}^{date_short_pretty}|${date}>`)
 		}
