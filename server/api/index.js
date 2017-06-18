@@ -10,12 +10,9 @@ const octo = new octokat({
 	token: gitHubToken
 })
 
-/*
-
-*/
-
 router.post('/gitlastcommit', (req, res, next) => {
 	console.log('~~~~~~HERE IS THE BODY ~~~~~: ', req.body)
+	const slackChannel = req.body.channel_id
 	const gitRequest = req.body.text.split(' ')
 	// capture the username & reponame
 	const userName = gitRequest[0]
@@ -35,12 +32,13 @@ router.post('/gitlastcommit', (req, res, next) => {
 					url = response.items[0].htmlUrl
 		const lastCommit = `The last commit was made by ${author} on <!date${date}|${date}>, with
 		the message: '${message}'. You can find more details here: ${url}`
-		return res.send({"text": lastCommit, "mrkdown_in": ["text"]})
+		return res.send({text: lastCommit, mrkdown_in: ["text"], channel: slackChannel})
 	})
 	.catch(next)
 })
 
 router.post('/gitrefs', (req, res, next) => {
+	const slackChannel = req.body.channel_id
 	// if (req.body.command === '/gitlastcommit') {
 	const gitRequest = req.body.text.split(' ')
 	// capture the username & reponame
@@ -51,12 +49,12 @@ router.post('/gitrefs', (req, res, next) => {
 	.git.refs.fetch()
 	//get the data we need
 	.then(response => {
-		console.log(response)
+		// console.log(response)
 		// order the references
 		const refs = response.items.map(item => `*${item.ref}*: ${item.url}`)
 		const listOfRefs = 'Here is a list of the current references: ' + refs.join('\n')
 	// send a response back to slack
-		res.send({"text": listOfRefs, "mrkdown_in": ["text"]})
+		res.send({"text": listOfRefs, "mrkdown_in": ["text"], channel: slackChannel})
 	})
 	.catch(next)
 })
