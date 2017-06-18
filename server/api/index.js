@@ -33,7 +33,7 @@ router
 					message = commit.message
 					//link if broken
 					url = response.items[0].htmlUrl
-		const lastCommit = `<${url}|The last commit> was made <!date^${unixDate}^{date_short_pretty}|${date}>, by _${author}_: '${message}'.`
+		const lastCommit = `<${url}|The last commit> was made <!date^${unixDate}^{date_short_pretty}|${date}>, by ${author}: "${message}".`
 		return res.send({text: lastCommit, channel: slackChannel, response_type: 'in_channel' })
 	})
 	.catch(next)
@@ -57,9 +57,9 @@ router
 			if (item.ref.startsWith('refs/heads'))
 			return item
 		}).map(filteredItems => {
-			itemRef = filteredItems.ref.split('/')
+			const itemRef = filteredItems.ref.split('/'),
 			itemName = itemRef[3] ? itemRef[3] : itemRef[2]
-			`<${filteredItems.url}|${itemName}>`
+			return `<${filteredItems.url}|${itemName}>`
 		})
 
 		const listOfRefs = `Here is a list of ${repoName}\'s current branches:\n' + ${refs.join('\n')}`
@@ -96,7 +96,7 @@ router
 			searchItems.push(`${i}. <${item.htmlUrl}|${item.fullName}>: ${item.forks} forks,  language: ${item.language}, last updated: <!date^${item.unixDate}^{date_short_pretty}|${item.lastUpdated}>`)
 		}
 
-		const searchText = `For your search *${req.body.text}*, there are *${searchResults.totalCount}* results. The first five are:\n + ${searchItems.join('\n')}\n<https://github.com${searchResults.url}|Search through all results here.>`
+		const searchText = `For your search *${req.body.text}*, there are *${searchResults.totalCount}* results. The first five are:\n${searchItems.join('\n')}\n<https://github.com${searchResults.url}|Search through all results here.>`
 		// response back to Slack
 		res.send({text: searchText, channel: slackChannel, response_type: 'in_channel'})
 	})
