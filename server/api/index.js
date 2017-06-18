@@ -29,7 +29,7 @@ router
 		const author = commit.author.name,
 					email = commit.author.email
 					date = new Date(commit.author.date)
-					unixDate = date.getTime(),
+					unixDate = date.getTime() / 1000,
 					message = commit.message
 					//link if broken
 					url = response.items[0].htmlUrl
@@ -57,7 +57,7 @@ router
 			if (item.ref.startsWith('refs/heads'))
 			itemName = item.ref.split('/')[3]
 			return `<${item.url}|${itemName}>`})
-		const listOfRefs = `Here is a list of ${repoName}\'s current branches:\n' + refs.join('\n')`
+		const listOfRefs = `Here is a list of ${repoName}\'s current branches:\n' + ${refs.join('\n')}`
 	// send a response back to slack
 		res.send({text: listOfRefs, channel: slackChannel, response_type: 'in_channel'})
 	})
@@ -85,12 +85,12 @@ router
 				htmlUrl: searchResults.items[i].htmlUrl,
 				forks: searchResults.items[i].forks,
 				language: searchResults.items[i].language,
-				lastUpdated: searchResults.items[i].updatedAt
+				lastUpdated: new Date(searchResults.items[i].updatedAt)
 			})
-			searchItems.push(`${i}. <${item.htmlUrl}|${item.description}> has ${item.forks} forks and is written in ${item.language}. Last updated: ${new Date(item.lastUpdated)}`)
+			searchItems.push(`${i}. <${item.htmlUrl}|${item.description}> has ${item.forks} forks and is written in ${item.language}. Last updated: ${item.lastUpdated}`)
 		}
 
-		const searchText = `For your search on ${req.body.text}, there are ${res.totalCount} results. The first five are:\n + ${searchItems.join('\n')}\n<${res.url}|Search through all results here.>`
+		const searchText = `For your search on ${req.body.text}, there are ${searchResults.totalCount} searchResultsults. The first five are:\n + ${searchItems.join('\n')}\n<${res.url}|Search through all results here.>`
 		// response back to Slack
 		res.send({text: searchText, channel: slackChannel, response_type: 'in_channel'})
 	})
