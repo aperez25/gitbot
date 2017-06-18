@@ -55,10 +55,9 @@ router
 		// order the references
 		const refs = response.items.filter(item => {
 			if (item.ref.startsWith('refs/heads'))
-			itemName = item.ref.split('/')[3]
-			return `<${item.url}|${itemName}>`
-		})
-		console.log(refs)
+			return item
+		}).map(filteredItems => `<${filteredItems.url}|${filteredItems.ref.split('/')[3]}>`)
+
 		const listOfRefs = `Here is a list of ${repoName}\'s current branches:\n' + ${refs.join('\n')}`
 	// send a response back to slack
 		res.send({text: listOfRefs, channel: slackChannel, response_type: 'in_channel'})
@@ -90,7 +89,7 @@ router
 				lastUpdated: new Date(searchResults.items[i].updatedAt),
 				unixDate: new Date(searchResults.items[i].updatedAt).getTime() / 1000
 			})
-			searchItems.push(`${i}. <${item.htmlUrl}|${item.description}>: ${item.forks} forks,  language: ${item.language}, last updated: <!date^${item.unixDate}^{date_short_pretty}|${date}>`)
+			searchItems.push(`${i}. <${item.htmlUrl}|${item.description}>: ${item.forks} forks,  language: ${item.language}, last updated: <!date^${item.unixDate}^{date_short_pretty}|${item.lastUpdated}>`)
 		}
 
 		const searchText = `For your search on ${req.body.text}, there are ${searchResults.totalCount} results. The first five are:\n + ${searchItems.join('\n')}\n<${searchResults.url}|Search through all results here.>`
