@@ -59,8 +59,10 @@ router
 	}).then(filteredItems => {
 		// branch url is broken right now
 		filteredItems.forEach(item => {
+			console.log(item)
 			repo.commits.fetch(item.sha)
 			.then(object => {
+				console.log(object)
 				const objectRef = object.ref.split('/'),
 				objectName = objectRef[3] ? objectRef[3] : objectRef[2]
 				branches.push(`<${object.html_url}|${objectName}>`)
@@ -83,8 +85,12 @@ router
 	repoRequest = req.body.text.split(', '),
 	gitHubSearch = repoRequest[0],
 	searchLanguage = repoRequest[1] || '',
-	searchTopics = repoRequest.slice(2).join(' ') || ''
-  gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${gitHubSearch}+${encodeURI('topic:', searchTopics)}&l=${searchLanguage}`
+	searchTopics = repoRequest.slice(2).join(' ') || null,
+	gitHubSearchURL
+	if (searchTopics)
+  	gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${gitHubSearch}+${encodeURI('topic:', searchTopics)}&l=${searchLanguage}`
+	else
+		gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${gitHubSearch}&l=${searchLanguage}`
 	// get gitHub results
 	octo.search.repositories.fetch({
 		q: gitHubSearch,
