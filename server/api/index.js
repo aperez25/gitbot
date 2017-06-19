@@ -32,7 +32,7 @@ router
 					message = commit.message
 					//link if broken
 					url = response.items[0].htmlUrl
-		const lastCommit = `<${url}|The last commit> was made <!date^${unixDate}^{date_short_pretty}|${date}>, by ${author}: "${message}".`
+		const lastCommit = `<${url}|The last commit> was made <!date^${unixDate}^{date_short_pretty} at {time}|${date}>, by ${author}: "${message}".`
 		return res.send({text: lastCommit, channel: slackChannel, response_type: 'in_channel' })
 	})
 	.catch(next)
@@ -57,13 +57,14 @@ router
 		})
 		// branch url is broken right now
 		const branches = refs.map(filteredItems => {
-			const itemRef = filteredItems.ref.split('/'),
-			itemName = itemRef[3] ? itemRef[3] : itemRef[2]
-			itemURL = repo.commits.fetch(filteredItems.sha)
-				.then(object => object.html_url)
-			return `<${itemURL}|${itemName}>`
-		})
-		const branchList = `Here is a list of ${repoName}\'s current branches:\n${branches.join('\n')}`
+			return repo.commits.fetch(filteredItems.sha)
+				.then(object => {
+			const objectRef = object.ref.split('/'),
+			objectName = objectRef[3] ? objectRef[3] : objectRef[2]
+			return `<${object.html_url}|${itemName}>`
+		}),
+		// $q.all() // processes an array of promises
+		branchList = `Here is a list of ${repoName}\'s current branches:\n${branches.join('\n')}`
 	// send a response back to slack
 		res.send({text: branchList, channel: slackChannel, response_type: 'in_channel'})
 	})
@@ -80,7 +81,7 @@ router
 	// get gitHub results
 	octo.search.repositories.fetch({
 		q: gitHubSearch,
-		l: searchLanguage,
+		language: searchLanguage,
 		topic: searchTopics
 	})
 	.then(searchResults => {
@@ -98,7 +99,7 @@ router
 			searchItems.push(`${i}. <${item.htmlUrl}|${item.fullName}>: ${item.forks} forks,  language: ${item.language}, last updated: <!date^${item.unixDate}^{date_short_pretty}|${item.lastUpdated}>`)
 		}
 
-		const searchText = `For your search *${req.body.text}*, there are *${searchResults.totalCount}* results. The first five are:\n${searchItems.join('\n')}\n<${gitHubSearchURL}|Search through all results here.>`
+		const searchText = `Here are the first five results for your search *${req.body.text}*:\n${searchItems.join('\n')}\n<${gitHubSearchURL}|Search through all results here.>`
 		// response back to Slack
 		res.send({text: searchText, channel: slackChannel, response_type: 'in_channel'})
 	})
