@@ -6,15 +6,15 @@
 **What I can do on the site:**
 * Answer basic questions about Git and GitHub
 * Answer popular GitHub questions like "How do I merge branches?"
-* Chat with GitBot directly or see formatted text ouput for Markdown 
+* Chat with GitBot directly or see formatted Markdown output
 
 **What I can do on Slack:**
 * All of the site functionality mentioned above
 * Four slash commands, never leave Slack again!: 
-  * /gitpopular: Fetches the most popular repo's for the past week
-  * /gitlastcommit: Fetches the last commit for a given GitHub username and repo
-  * /gitbranches: Fetches all branches for a given repo
-  * /gitsearch: search GitHub repos by query, language and topic! 
+  * **/gitpopular:** Fetches the most popular repo's for the past week
+  * **/gitlastcommit:** Fetches the last commit for a given GitHub username and repo
+  * **/gitbranches:** Fetches all branches for a given repo
+  * **/gitsearch:** search GitHub repos by query, language and topic! 
   
 **How I'm built:**
 * Javascript
@@ -23,3 +23,4 @@
 * [Slack API](https://api.slack.com/slack-apps)
 * [GitHub API](https://developer.github.com/v3/)
 * [Bootstrap](http://getbootstrap.com/)
+* See the package.json[https://github.com/aperez25/gitbot/blob/master/package.json] for more details!
