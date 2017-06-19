@@ -54,9 +54,9 @@ router
 		// order the references
 		return response.items.filter(item => {
 			if (item.ref.startsWith('refs/heads')) {
-				const objectRef = object.ref.split('/'),
-				objectName = objectRef[3] ? objectRef[3] : objectRef[2]
-				branches.push({name: objectName, sha: item.sha, url: ''})
+				const itemRef = item.ref.split('/'),
+				itemName = itemRef[3] ? itemRef[3] : itemRef[2]
+				branches.push({name: itemName, sha: item.sha, url: ''})
 				return item
 			}
 		})
