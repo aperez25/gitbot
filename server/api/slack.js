@@ -155,7 +155,7 @@ router
 				language: searchResults.items[i].language,
 				stars: searchResults.items[i].stargazersCount,
 			})
-			searchItems.push(`${i+1}. <${item.htmlUrl}|${item.fullName}>: *${item.stars}* stars, language: ${item.language},\n_${item.description}_`)
+			searchItems.push(`${i+1}. <${item.htmlUrl}|${item.fullName}>: *${item.stars}* stars, language: ${item.language}\n_${item.description}_`)
 		}
 
 		const searchText = `The five most popular projects in the last week are:\n>`
