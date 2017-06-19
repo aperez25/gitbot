@@ -5,7 +5,6 @@ import Root from './root'
 import About from './about'
 import Chat from './chat'
 import Chatbox from './chatbox'
-import Toggle from './toggle'
 
 ReactDOM.render(
   <BrowserRouter>

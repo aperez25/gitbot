@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux';
 import axios from 'axios'
 import {Link} from 'react-router-dom'
+import Response from './response'
 
 class Chat extends React.Component {
   render() {
@@ -27,7 +28,7 @@ class Chat extends React.Component {
 
 const gitBotRequest = (question) => {
     axios.post('/api/apiai', {question})
-    .then(res => console.log(res.data))
+    .then(res => Response.props = res.data)
     // .then(user => dispatch(create(user)))
     // .then(() => browserHistory.push('/products'))
     .catch(err => console.error(`Creating new account unsuccesful`, err))

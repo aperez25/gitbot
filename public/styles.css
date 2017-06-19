@@ -34,7 +34,7 @@ body {
 a,
 a:focus,
 a:hover {
-  color: #fff;
+  color: var(--cerulean);
 }
 
 /* Custom default button */
@@ -67,8 +67,13 @@ li {
   list-style-type: none;
 }
 
+.slack {
+  color: var(--athens-gray)
+}
 
-
+#mygithub {
+  color: var(--koromiko)
+}
 /* Extra markup and styles for table-esque vertical and horizontal centering */
 .site-wrapper {
   display: table;
