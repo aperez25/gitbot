@@ -44,32 +44,38 @@ router
 	gitRequest = req.body.text.split(' '),
 	// capture the username & reponame
 	userName = gitRequest[0],
-	repoName = gitRequest[1]
+	repoName = gitRequest[1],
+	branches = []
 	// fetches the repo's commit history
 	repo = octo.repos(userName, repoName)
 	repo.git.refs.fetch()
 	//get the data we need
 	.then(response => {
 		// order the references
-		const refs = response.items.filter(item => {
+		return response.items.filter(item => {
 			if (item.ref.startsWith('refs/heads'))
 			return item
 		})
+	}).then(filteredItems => {
 		// branch url is broken right now
-		const branches = refs.map(filteredItems => {
-			return repo.commits.fetch(filteredItems.sha)
-				.then(object => {
-			const objectRef = object.ref.split('/'),
-			objectName = objectRef[3] ? objectRef[3] : objectRef[2]
-			return `<${object.html_url}|${itemName}>`
-		}),
+		filteredItems.forEach(item => {
+			repo.commits.fetch(item.sha)
+			.then(object => {
+				const objectRef = object.ref.split('/'),
+				objectName = objectRef[3] ? objectRef[3] : objectRef[2]
+				branches.push(`<${object.html_url}|${objectName}>`)
+			})
+			.catch(next)
+		})
+	})
+	.then(() => {
 		// $q.all() // processes an array of promises
 		branchList = `Here is a list of ${repoName}\'s current branches:\n${branches.join('\n')}`
 	// send a response back to slack
 		res.send({text: branchList, channel: slackChannel, response_type: 'in_channel'})
 	})
 	.catch(next)
-	})
+
 })
 
 .post('/searchrepos', (req, res, next) => {
