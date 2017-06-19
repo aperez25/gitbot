@@ -80,9 +80,15 @@ router
 					// branches.push({name: branchName, sha: branch.sha})
 					return branchName
 				})
-		branchList = `Here is a list of ${repoName}\'s current branches:\n${branches.join('\n')}`
+		branchList = `Here is a list of ${repoName}\'s current branches:\n`
 	// send a response back to slack
-		res.send({text: branchList, channel: slackChannel, response_type: 'in_channel'})
+		res.send({text: branchList,
+			"attachments": [
+        {
+            text: `${branches.join('\n')}`
+        }
+    ],
+		channel: slackChannel, response_type: 'in_channel'})
 	})
 	.catch(next)
 })
@@ -120,9 +126,15 @@ router
 			searchItems.push(`${i+1}. <${item.htmlUrl}|${item.fullName}>: ${item.forks} forks,  language: ${item.language}, last updated: <!date^${item.unixDate}^{date_short_pretty}|${item.lastUpdated}>`)
 		}
 
-		const searchText = `Here are the first five results for your search *${req.body.text}*:\n${searchItems.join('\n')}\n<${gitHubSearchURL}|Search through all results here.>`
+		const searchText = `Here are the first five results for your search *${req.body.text}*:`
 		// response back to Slack
-		res.send({text: searchText, channel: slackChannel, response_type: 'in_channel'})
+		res.send({text: searchText,
+			"attachments": [
+        {
+            text: `${searchItems.join('\n')}\n<${gitHubSearchURL}|Search through all results here.>`
+        }
+    ],
+			channel: slackChannel, response_type: 'in_channel'})
 	})
 	.catch(next)
 })
