@@ -58,22 +58,22 @@ router
 			}
 		})
 	})
-	.then(filteredBranches =>{
-		filteredBranches.forEach(b => {
-			repo.commits(b.sha).fetch() //was searching commits not commit :O
-			.then(object => {
-				const formattedBranch = {name: b.name, url: object.html_url}
-				branches.push(`<${formattedBranch.url}|${formattedBranch.name}>`)
-			})
-		})
-	})
+	// .then(filteredBranches =>{
+	// 	filteredBranches.forEach(b => {
+	// 		repo.commits(b.sha).fetch() //was searching commits not commit :O
+	// 		.then(object => {
+	// 			const formattedBranch = {name: b.name, url: object.html_url}
+	// 			branches.push(`<${formattedBranch.url}|${formattedBranch.name}>`)
+	// 		})
+	// 	})
+	// })
 	.then(filteredBranches => {
-				// branches = filteredBranches.map(branch => {
-				// 	const branchRef = branch.ref.split('/'),
-				// 	branchName = branchRef[3] ? branchRef[3] : branchRef[2]
-				// 	// branches.push({name: branchName, sha: branch.sha})
-				// 	return branchName
-				// })
+		branches = filteredBranches.map(branch => {
+			const branchRef = branch.ref.split('/'),
+			branchName = branchRef[3] ? branchRef[3] : branchRef[2]
+			// branches.push({name: branchName, sha: branch.sha})
+			return branchName
+		})
 		branchList = `Here is a list of ${repoName}\'s current branches:\n`
 	// send a response back to slack
 		res.send({text: branchList,
@@ -127,7 +127,7 @@ router
 			text: searchText,
 			attachments: [{
 					color: '#02B0D8',
-					text: `${searchItems.join('\n')}\n<${gitHubSearchURL}|Search through all results here.>`,
+					text: `${searchItems.join('\n')}\n<${gitHubSearchURL}|See all results here>`,
 					mrkdwn_in: ['text']
       }],
 			channel: slackChannel, response_type: 'in_channel'})
@@ -164,7 +164,7 @@ router
 			text: searchText,
 			attachments: [{
 					color: '#02B0D8',
-					text: `${searchItems.join('\n')}\n<${gitHubSearchURL}|Search through all results here.>`,
+					text: `${searchItems.join('\n')}\n<${gitHubSearchURL}|See all results here>`,
 					mrkdwn_in: ['text']
       }],
 			channel: slackChannel, response_type: 'in_channel'})
