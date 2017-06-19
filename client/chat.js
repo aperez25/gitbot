@@ -1,15 +1,28 @@
 import React from 'react'
+import { connect } from 'react-redux';
 
-const Chat = () => (
-  <div className="col-lg-6 chat">
-    <input id="speech" type="text" />
-    <button id="rec" class="btn">Speak</button>
-    <div id="spokenResponse" class="spoken-response" />
-      <div class="spoken-response__text" />
-  </div>
-)
+class Chat extends React.Component {
+  render() {
+    return (
+      <div className="col-lg-6 chat">
+      <form onSubmit={e => {
+        e.preventDefault()
+        console.log(e.target.question.value)
+        return e.target.question.value
+      }}>
+        <input type="question" name="question" required />
+        <button type="submit" className="btn btn-primary">Speak</button>
+      </form>
+      <div id="spokenResponse" className="spoken-response" />
+      <div className="spoken-response__text" />
+      </div>
+    )
+  }
+
+}
 
 export default Chat
+// export default connect(null, mapDispatch)(Chat)
 
 // <iframe
 //   width="500"
