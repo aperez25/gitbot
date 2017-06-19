@@ -7,7 +7,7 @@ import Chatbox from './chatbox'
 const Root = () => (
   <div className="container">
     <About />
-    <p className="lead"> Let's get started! Would you like to <Link to='/chatbox'>chat in realtime</Link> or <Link to="/chat">see formatted text?</Link> You can toggle at any time!</p>
+    <p className="lead"> <Link to='/chatbox'>Chat in realtime with GitBot</Link> for simple Q&A<p> <Link to="/chat">Exchange messages with GitBot</Link> for workflow questions like "How do I create a new project?"</p><Link to="/commands">Use GitBot commands</Link> to see what's happening on GitHub</p>
   </div>
 )
 

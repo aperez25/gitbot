@@ -5,6 +5,7 @@ import Root from './root'
 import About from './about'
 import Chat from './chat'
 import Chatbox from './chatbox'
+import Commands from './commands'
 
 ReactDOM.render(
   <BrowserRouter>
@@ -15,6 +16,7 @@ ReactDOM.render(
         <Switch>
           <Route path="/chat" component={Chat} />
           <Route path="/chatbox" component={Chatbox} />
+          <Route path="/commands" component={Commands} />
         </Switch>
       </div>
     </div>

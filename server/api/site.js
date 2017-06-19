@@ -20,9 +20,8 @@ router
 function ask(text, options) {
 	return new Promise((resolve, reject) => {
 		var defaultOptions = {
-			sessionId: Math.floor((Math.random() + 1) * 1000) // use any arbitrary id - doesn't matter
+			sessionId: Math.floor((Math.random() + 1) * 1000) // can use any arbitrary id
 		};
-
 		let request = apiaiRouter.textRequest(text, Object.assign(defaultOptions, options));
 		request.on('response', (response) => {
 			return resolve(response);
