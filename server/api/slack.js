@@ -44,8 +44,7 @@ router
 	// capture the username & reponame
 	userName = gitRequest[0],
 	repoName = gitRequest[1]
-	let branches = [],
-	formattedBranches = []
+	let branches = []
 	// fetches the repo's commit history
 	repo = octo.repos(userName, repoName)
 
@@ -61,22 +60,23 @@ router
 				return item
 			}
 		})
-	}).then(filteredItems => {
-		return filteredItems.map(item => {
-			return repo.commits.fetch(item.sha)
-		})
 	})
-	.then(itemPromises =>
-		Promise.all(itemPromises)
+	.then(filteredItems =>{
+		repo.commits.fetch()
 			.then(object => {
-				console.log(object.items)
 				// object is an array - so need to get items[i].html_url
-				formattedBranches = object.map(item => {
-					branch = {name: item.name, url: item.html_url}})
-				return `<${branch.url}|${branch.name}>`
+				return object.filter(item => {
+						var obj = branches.filter(b => {
+    					return b.sha === item.sha
+						})[0];
+					if (obj){
+						var formattedBranch = {name: obj.name, url: item.html_url}
+							return `<${formattedBranch.url}|${formattedBranch.name}>`
+					}
+				})
+			})
 		})
-	)
-	.then(()=> {
+	.then(formattedBranches => {
 		branchList = `Here is a list of ${repoName}\'s current branches:\n${formattedBranches.join('\n')}`
 	// send a response back to slack
 		res.send({text: branchList, channel: slackChannel, response_type: 'in_channel'})
