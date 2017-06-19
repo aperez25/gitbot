@@ -10,7 +10,9 @@ const octo = new octokat({
 	token: gitHubToken
 })
 
-router.post('/gitlastcommit', (req, res, next) => {
+router
+
+.post('/gitcommit', (req, res, next) => {
 	console.log('~~~~~~HERE IS THE BODY ~~~~~: ', req.body)
 	const slackChannel = req.body.channel_id
 	const gitRequest = req.body.text.split(' ')
@@ -26,17 +28,18 @@ router.post('/gitlastcommit', (req, res, next) => {
 		const commit = response.items[0].commit
 		const author = commit.author.name,
 					email = commit.author.email
-					date = new Date(commit.author.date).getTime(),
+					date = new Date(commit.author.date)
+					unixDate = date.getTime() / 1000,
 					message = commit.message
 					//link if broken
 					url = response.items[0].htmlUrl
-		const lastCommit = `<${url}|The last commit> was made by ${author} on <!date^${date}^{date_pretty} at {time}|${date}>, with the message: '${message}'.`
+		const lastCommit = `<${url}|The last commit> was made <!date^${unixDate}^{date_short_pretty}|${date}>, by ${author}: "${message}".`
 		return res.send({text: lastCommit, channel: slackChannel, response_type: 'in_channel' })
 	})
 	.catch(next)
 })
 
-router.post('/gitrefs', (req, res, next) => {
+.post('/gitbranches', (req, res, next) => {
 	const slackChannel = req.body.channel_id
 	// if (req.body.command === '/gitlastcommit') {
 	const gitRequest = req.body.text.split(' ')
@@ -50,15 +53,56 @@ router.post('/gitrefs', (req, res, next) => {
 	.then(response => {
 		// console.log(response)
 		// order the references
-		const refs = response.items.map(item => `<${item.url}|${item.ref}>`)
-		const listOfRefs = 'Here is a list of ${repoName}\'s current references:\n' + refs.join('\n')
+		const refs = response.items.filter(item => {
+			if (item.ref.startsWith('refs/heads'))
+			return item
+		}).map(filteredItems => {
+			const itemRef = filteredItems.ref.split('/'),
+			itemName = itemRef[3] ? itemRef[3] : itemRef[2]
+			return `<${filteredItems.object.url.html_url}|${itemName}>`
+		})
+
+		const listOfRefs = `Here is a list of ${repoName}\'s current branches:\n${refs.join('\n')}`
 	// send a response back to slack
 		res.send({text: listOfRefs, channel: slackChannel, response_type: 'in_channel'})
 	})
 	.catch(next)
 })
 
+.post('/searchrepos', (req, res, next) => {
+	const slackChannel = req.body.channel_id,
+	repoRequest = req.body.text.split(', '),
+	gitHubSearch = repoRequest[0],
+	searchLanguage = repoRequest[1] || '',
+	searchTopics = repoRequest.slice(2).join(' ') || ''
+  gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${gitHubSearch}&l=${searchLanguage}`
+	// get gitHub results
+	octo.search.repositories.fetch({
+		q: gitHubSearch,
+		l: searchLanguage,
+		topic: searchTopics
+	})
+	.then(searchResults => {
+		const searchItems = []
+		for (var i = 1; i <= 5; i++) {
+			const item = ({
+				fullName: searchResults.items[i].fullName,
+				// homepage: searchResults.items[i].homepage,
+				htmlUrl: searchResults.items[i].htmlUrl,
+				forks: searchResults.items[i].forks,
+				language: searchResults.items[i].language,
+				lastUpdated: new Date(searchResults.items[i].updatedAt),
+				unixDate: new Date(searchResults.items[i].updatedAt).getTime() / 1000
+			})
+			searchItems.push(`${i}. <${item.htmlUrl}|${item.fullName}>: ${item.forks} forks,  language: ${item.language}, last updated: <!date^${item.unixDate}^{date_short_pretty}|${item.lastUpdated}>`)
+		}
 
+		const searchText = `For your search *${req.body.text}*, there are *${searchResults.totalCount}* results. The first five are:\n${searchItems.join('\n')}\n<${gitHubSearchURL}|Search through all results here.>`
+		// response back to Slack
+		res.send({text: searchText, channel: slackChannel, response_type: 'in_channel'})
+	})
+	.catch(next)
+})
 
 // var request = apiaiRouter.textRequest('What is git?', {
 //     sessionId: '304'
