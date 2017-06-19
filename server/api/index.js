@@ -59,10 +59,10 @@ router
 		}).map(filteredItems => {
 			const itemRef = filteredItems.ref.split('/'),
 			itemName = itemRef[3] ? itemRef[3] : itemRef[2]
-			return `<${filteredItems.url}|${itemName}>`
+			return `<${filteredItems.object.url.html_url}|${itemName}>`
 		})
 
-		const listOfRefs = `Here is a list of ${repoName}\'s current branches:\n' + ${refs.join('\n')}`
+		const listOfRefs = `Here is a list of ${repoName}\'s current branches:\n${refs.join('\n')}`
 	// send a response back to slack
 		res.send({text: listOfRefs, channel: slackChannel, response_type: 'in_channel'})
 	})
@@ -75,10 +75,11 @@ router
 	gitHubSearch = repoRequest[0],
 	searchLanguage = repoRequest[1] || '',
 	searchTopics = repoRequest.slice(2).join(' ') || ''
-
+  gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${gitHubSearch}&l=${searchLanguage}`
+	// get gitHub results
 	octo.search.repositories.fetch({
 		q: gitHubSearch,
-		language: searchLanguage,
+		l: searchLanguage,
 		topic: searchTopics
 	})
 	.then(searchResults => {
@@ -96,7 +97,7 @@ router
 			searchItems.push(`${i}. <${item.htmlUrl}|${item.fullName}>: ${item.forks} forks,  language: ${item.language}, last updated: <!date^${item.unixDate}^{date_short_pretty}|${item.lastUpdated}>`)
 		}
 
-		const searchText = `For your search *${req.body.text}*, there are *${searchResults.totalCount}* results. The first five are:\n${searchItems.join('\n')}\n<https://github.com${searchResults.url}|Search through all results here.>`
+		const searchText = `For your search *${req.body.text}*, there are *${searchResults.totalCount}* results. The first five are:\n${searchItems.join('\n')}\n<${searchResults.url}|Search through all results here.>`
 		// response back to Slack
 		res.send({text: searchText, channel: slackChannel, response_type: 'in_channel'})
 	})
