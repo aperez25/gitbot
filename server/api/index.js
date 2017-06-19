@@ -73,7 +73,7 @@ router
 		})
 	})
 	.then(branchURLs => {
-		console.log(branchURLs)
+		console.log(branchURLs) //RETURNING UNDEFINED :O
 		branchList = `Here is a list of ${repoName}\'s current branches:\n${branchURLs.join('\n')}`
 	// send a response back to slack
 		res.send({text: branchList, channel: slackChannel, response_type: 'in_channel'})
@@ -87,18 +87,18 @@ router
 	repoRequest = req.body.text.split(', '),
 	gitHubSearch = repoRequest[0],
 	searchLanguage = repoRequest[1] || '',
-	searchTopics = repoRequest.slice(2).join(' ') || null
+	searchTopic = repoRequest[2] || null
 	console.log(searchLanguage)
 	let gitHubSearchURL = ''
 
-	if (searchTopics)
-  	gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${gitHubSearch}+${encodeURI('topic:', searchTopics)}&l=${searchLanguage}`
+	if (searchTopic)
+  	gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${gitHubSearch}+${encodeURI(`'topic:'${searchTopic}`)}&l=${searchLanguage}`
 	else
 		gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${gitHubSearch}&l=${searchLanguage}`
-	// get gitHub results
+	// get gitHub results - NEED TO SORT BY BEST MATCH
 	octo.search.repositories.fetch({
 		q: `${gitHubSearch}+language:${searchLanguage}`,
-		topic: searchTopics
+		topic: searchTopic
 	})
 	.then(searchResults => {
 		const searchItems = []
