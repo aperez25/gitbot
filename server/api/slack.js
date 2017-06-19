@@ -54,10 +54,7 @@ router
 		// order the references
 		return response.items.filter(item => {
 			if (item.ref.startsWith('refs/heads')) {
-				const itemRef = item.ref.split('/'),
-				itemName = itemRef[3] ? itemRef[3] : itemRef[2]
-				// branches.push({name: itemName, sha: item.sha})
-				return itemName
+				return item
 			}
 		})
 	})
@@ -77,6 +74,13 @@ router
 	// 		})
 	// 	})
 	.then(filteredBranches => {
+				branches = filteredBranches.map(branch => {
+					const itemRef = item.ref.split('/'),
+					itemName = itemRef[3] ? itemRef[3] : itemRef[2]
+					// branches.push({name: itemName, sha: item.sha})
+					return itemName
+
+				})
 		branchList = `Here is a list of ${repoName}\'s current branches:\n${filteredBranches.join('\n')}`
 	// send a response back to slack
 		res.send({text: branchList, channel: slackChannel, response_type: 'in_channel'})
