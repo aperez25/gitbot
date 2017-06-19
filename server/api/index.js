@@ -86,7 +86,8 @@ router
 	gitHubSearch = repoRequest[0],
 	searchLanguage = repoRequest[1] || '',
 	searchTopics = repoRequest.slice(2).join(' ') || null,
-	gitHubSearchURL
+	gitHubSearchURL = ''
+
 	if (searchTopics)
   	gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${gitHubSearch}+${encodeURI('topic:', searchTopics)}&l=${searchLanguage}`
 	else
