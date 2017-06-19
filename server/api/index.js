@@ -45,7 +45,7 @@ router
 	// capture the username & reponame
 	userName = gitRequest[0],
 	repoName = gitRequest[1],
-	branches = []
+	branches = [],
 	// fetches the repo's commit history
 	repo = octo.repos(userName, repoName)
 	repo.git.refs.fetch()
@@ -54,25 +54,26 @@ router
 		// order the references
 		return response.items.filter(item => {
 			if (item.ref.startsWith('refs/heads'))
+				const objectRef = object.ref.split('/'),
+				objectName = objectRef[3] ? objectRef[3] : objectRef[2]
+			branches.push({name: objectName, sha: item.sha, url: ''})
 			return item
 		})
 	}).then(filteredItems => {
-		// branch url is broken right now
 		filteredItems.forEach(item => {
-			console.log(item)
 			repo.commits.fetch(item.sha)
 			.then(object => {
-				console.log(object)
-				const objectRef = object.ref.split('/'),
-				objectName = objectRef[3] ? objectRef[3] : objectRef[2]
-				branches.push(`<${object.html_url}|${objectName}>`)
+				index = branches.indexOf(object.sha)
+				branches[index].url = object.html_url
 			})
 			.catch(next)
+			return branches.map(branch =>
+			`<${branch.url}|${branch.name}>`)
 		})
 	})
-	.then(() => {
-		// $q.all() // processes an array of promises
-		branchList = `Here is a list of ${repoName}\'s current branches:\n${branches.join('\n')}`
+	.then(branchURLs => {
+		console.log(branchURLs)
+		branchList = `Here is a list of ${repoName}\'s current branches:\n${branchURLs.join('\n')}`
 	// send a response back to slack
 		res.send({text: branchList, channel: slackChannel, response_type: 'in_channel'})
 	})
@@ -85,8 +86,8 @@ router
 	repoRequest = req.body.text.split(', '),
 	gitHubSearch = repoRequest[0],
 	searchLanguage = repoRequest[1] || '',
-	searchTopics = repoRequest.slice(2).join(' ') || null,
-	gitHubSearchURL = ''
+	searchTopics = repoRequest.slice(2).join(' ') || null
+	let gitHubSearchURL = ''
 
 	if (searchTopics)
   	gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${gitHubSearch}+${encodeURI('topic:', searchTopics)}&l=${searchLanguage}`
