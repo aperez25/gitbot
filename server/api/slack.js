@@ -57,25 +57,26 @@ router
 			if (item.ref.startsWith('refs/heads')) {
 				const itemRef = item.ref.split('/'),
 				itemName = itemRef[3] ? itemRef[3] : itemRef[2]
-				branches.push({name: itemName, sha: item.sha, url: ''})
+				branches.push({name: itemName, sha: item.sha})
 				return item
 			}
 		})
 	}).then(filteredItems => {
-		const itemURLS = filteredItems.map(item => {
+		return  filteredItems.map(item => {
 			return repo.commits.fetch(item.sha)
 		})
-		Promise.all(itemURLS)
+	})
+	.then(itemPromises =>
+		Promise.all(itemPromises)
 			.then(object => {
-				index = branches.indexOf(object.sha)
-				branches[index].url = object.html_url
-				formattedBranches = branches.map(branch =>
-			`<${branch.url}|${branch.name}>`)
-			})
+				console.log('got to objects: ', object.html_url)
+				formattedBranches = branches.map(item => {
+					branch = {name: item.name, url: object.html_url}})
+				return `<${branch.url}|${branch.name}>`
 		})
-	.then(branchURLs => {
-		console.log(branchURLs) //RETURNING UNDEFINED :O
-		branchList = `Here is a list of ${repoName}\'s current branches:\n${branchURLs.join('\n')}`
+	)
+	.then(()=> {
+		branchList = `Here is a list of ${repoName}\'s current branches:\n${formattedBranches.join('\n')}`
 	// send a response back to slack
 		res.send({text: branchList, channel: slackChannel, response_type: 'in_channel'})
 	})
