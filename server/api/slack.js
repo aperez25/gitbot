@@ -56,28 +56,28 @@ router
 			if (item.ref.startsWith('refs/heads')) {
 				const itemRef = item.ref.split('/'),
 				itemName = itemRef[3] ? itemRef[3] : itemRef[2]
-				branches.push({name: itemName, sha: item.sha})
-				return item
+				// branches.push({name: itemName, sha: item.sha})
+				return itemName
 			}
 		})
 	})
-	.then(filteredItems =>{
-		repo.commits.fetch()
-			.then(object => {
-				// object is an array - so need to get items[i].html_url
-				return object.filter(item => {
-						var obj = branches.filter(b => {
-    					return b.sha === item.sha
-						})[0];
-					if (obj){
-						var formattedBranch = {name: obj.name, url: item.html_url}
-							return `<${formattedBranch.url}|${formattedBranch.name}>`
-					}
-				})
-			})
-		})
-	.then(formattedBranches => {
-		branchList = `Here is a list of ${repoName}\'s current branches:\n${formattedBranches.join('\n')}`
+	// .then(filteredItems =>{
+	// 	repo.commits.fetch()
+	// 		.then(object => {
+	// 			// object is an array - so need to get items[i].html_url
+	// 			return object.filter(item => {
+	// 					var obj = branches.filter(b => {
+  //   					return b.sha === item.sha
+	// 					})[0];
+	// 				if (obj){
+	// 					var formattedBranch = {name: obj.name, url: item.html_url}
+	// 						return `<${formattedBranch.url}|${formattedBranch.name}>`
+	// 				}
+	// 			})
+	// 		})
+	// 	})
+	.then(filteredBranches => {
+		branchList = `Here is a list of ${repoName}\'s current branches:\n${filteredBranches.join('\n')}`
 	// send a response back to slack
 		res.send({text: branchList, channel: slackChannel, response_type: 'in_channel'})
 	})
