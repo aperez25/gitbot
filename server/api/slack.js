@@ -69,9 +69,10 @@ router
 	.then(itemPromises =>
 		Promise.all(itemPromises)
 			.then(object => {
-				console.log('got to objects: ', object)
-				formattedBranches = branches.map(item => {
-					branch = {name: item.name, url: object.html_url}})
+				console.log(object.items)
+				// object is an array - so need to get items[i].html_url
+				formattedBranches = object.map(item => {
+					branch = {name: item.name, url: item.html_url}})
 				return `<${branch.url}|${branch.name}>`
 		})
 	)
@@ -104,7 +105,7 @@ router
 	})
 	.then(searchResults => {
 		const searchItems = []
-		for (var i = 1; i <= 5; i++) {
+		for (var i = 0; i <= 4; i++) {
 			const item = ({
 				fullName: searchResults.items[i].fullName,
 				htmlUrl: searchResults.items[i].htmlUrl,
@@ -113,7 +114,7 @@ router
 				lastUpdated: new Date(searchResults.items[i].updatedAt),
 				unixDate: new Date(searchResults.items[i].updatedAt).getTime() / 1000
 			})
-			searchItems.push(`${i}. <${item.htmlUrl}|${item.fullName}>: ${item.forks} forks,  language: ${item.language}, last updated: <!date^${item.unixDate}^{date_short_pretty}|${item.lastUpdated}>`)
+			searchItems.push(`${i+1}. <${item.htmlUrl}|${item.fullName}>: ${item.forks} forks,  language: ${item.language}, last updated: <!date^${item.unixDate}^{date_short_pretty}|${item.lastUpdated}>`)
 		}
 
 		const searchText = `Here are the first five results for your search *${req.body.text}*:\n${searchItems.join('\n')}\n<${gitHubSearchURL}|Search through all results here.>`
@@ -135,7 +136,7 @@ router
 	})
 	.then(searchResults => {
 		const searchItems = []
-		for (var i = 1; i <= 5; i++) {
+		for (var i = 0; i <= 4; i++) {
 			const item = ({
 				fullName: searchResults.items[i].fullName,
 				htmlUrl: searchResults.items[i].htmlUrl,
@@ -143,7 +144,7 @@ router
 				language: searchResults.items[i].language,
 				stars: searchResults.items[i].stargazersCount,
 			})
-			searchItems.push(`${i}. <${item.htmlUrl}|${item.fullName}>: *${item.stars}* stars, language: ${item.language},\ndescription: _${item.description}_`)
+			searchItems.push(`${i+1}. <${item.htmlUrl}|${item.fullName}>: *${item.stars}* stars, language: ${item.language},\n_${item.description}_`)
 		}
 
 		const searchText = `The five most popular projects in the last week are:\n${searchItems.join('\n')}\n<${gitHubSearchURL}|Search through all results here.>`
