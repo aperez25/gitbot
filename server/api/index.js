@@ -87,11 +87,11 @@ router
 	repoRequest = req.body.text.split(', '),
 	gitHubSearch = repoRequest[0],
 	searchLanguage = repoRequest[1] || '',
-	searchTopics = repoRequest.slice(2).join(' ') || null
-	console.log(searchLanguage)
+	searchTopics = repoRequest[2] || ''
+
 	let gitHubSearchURL = ''
 
-	if (searchTopics)
+	if (searchTopics !== '')
   	gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${gitHubSearch}+${encodeURI('topic:', searchTopics)}&l=${searchLanguage}`
 	else
 		gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${gitHubSearch}&l=${searchLanguage}`
