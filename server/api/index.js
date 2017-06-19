@@ -47,24 +47,26 @@ router
 	const userName = gitRequest[0]
 	const repoName = gitRequest[1]
 	// fetches the repo's commit history
-	octo.repos(userName, repoName)
-	.git.refs.fetch()
+	const repo = octo.repos(userName, repoName)
+	repo.git.refs.fetch()
 	//get the data we need
 	.then(response => {
-		// console.log(response)
 		// order the references
 		const refs = response.items.filter(item => {
 			if (item.ref.startsWith('refs/heads'))
 			return item
-		}).map(filteredItems => {
+		})
+		// branch url is broken right now
+		const branches = refs.map(filteredItems => {
 			const itemRef = filteredItems.ref.split('/'),
 			itemName = itemRef[3] ? itemRef[3] : itemRef[2]
-			return `<${filteredItems.object.url.html_url}|${itemName}>`
+			itemURL = octo.repo.commits.fetch(filteredItems.sha)
+				.then(object => object.html_url)
+			return `<${itemURL}|${itemName}>`
 		})
-
-		const listOfRefs = `Here is a list of ${repoName}\'s current branches:\n${refs.join('\n')}`
+		const branchList = `Here is a list of ${repoName}\'s current branches:\n${branches.join('\n')}`
 	// send a response back to slack
-		res.send({text: listOfRefs, channel: slackChannel, response_type: 'in_channel'})
+		res.send({text: branchList, channel: slackChannel, response_type: 'in_channel'})
 	})
 	.catch(next)
 })
@@ -75,7 +77,7 @@ router
 	gitHubSearch = repoRequest[0],
 	searchLanguage = repoRequest[1] || '',
 	searchTopics = repoRequest.slice(2).join(' ') || ''
-  gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${gitHubSearch}&l=${searchLanguage}`
+  gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${gitHubSearch}+${encodeURI('topic:', searchTopics)}&l=${searchLanguage}`
 	// get gitHub results
 	octo.search.repositories.fetch({
 		q: gitHubSearch,
