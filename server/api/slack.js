@@ -124,13 +124,13 @@ router
 
 .post('/popular', (req, res, next) => {
 	const slackChannel = req.body.channel_id,
-	last7 = moment().subtract(7, 'days').calendar();
+	last7 = moment().subtract(7, 'days').format("YYYY-MM-DD")
 	let gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=created:${last7}`
 
 	octo.search.repositories.fetch({
 		q: `created:${last7}`,
 		sort: 'stars',
-		order: desc
+		order: 'desc'
 	})
 	.then(searchResults => {
 		const searchItems = []
@@ -140,10 +140,11 @@ router
 				htmlUrl: searchResults.items[i].htmlUrl,
 				forks: searchResults.items[i].forks,
 				language: searchResults.items[i].language,
+				stars: searchResults.items[i].stargazers_count,
 				lastUpdated: new Date(searchResults.items[i].updatedAt),
 				unixDate: new Date(searchResults.items[i].updatedAt).getTime() / 1000
 			})
-			searchItems.push(`${i}. <${item.htmlUrl}|${item.fullName}>: ${item.forks} forks,  language: ${item.language}, last updated: <!date^${item.unixDate}^{date_short_pretty}|${item.lastUpdated}>`)
+			searchItems.push(`${i}. <${item.htmlUrl}|${item.fullName}>: ${item.forks} forks, ${item.stars} stars, language: ${item.language}, last updated: <!date^${item.unixDate}^{date_short_pretty}|${item.lastUpdated}>`)
 		}
 
 		const searchText = `The five most popular projects in the last week are: *${req.body.text}*:\n${searchItems.join('\n')}\n<${gitHubSearchURL}|Search through all results here.>`
