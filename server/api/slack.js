@@ -83,11 +83,10 @@ router
 		branchList = `Here is a list of ${repoName}\'s current branches:\n`
 	// send a response back to slack
 		res.send({text: branchList,
-			"attachments": [
-        {
-            text: `${branches.join('\n')}`
-        }
-    ],
+			attachments: [{
+				color: '#02B0D8',
+				text: `${branches.join('\n')}`
+      }],
 		channel: slackChannel, response_type: 'in_channel'})
 	})
 	.catch(next)
@@ -110,7 +109,8 @@ router
 	// get gitHub results - NEED TO SORT BY BEST MATCH
 	octo.search.repositories.fetch({
 		q: `${gitHubSearch}+language:${searchLanguage}`,
-		topic: searchTopic
+		topic: searchTopic,
+		order: 'desc'
 	})
 	.then(searchResults => {
 		const searchItems = []
@@ -128,12 +128,12 @@ router
 
 		const searchText = `Here are the first five results for your search *${req.body.text}*:`
 		// response back to Slack
-		res.send({text: searchText,
-			"attachments": [
-        {
-            text: `${searchItems.join('\n')}\n<${gitHubSearchURL}|Search through all results here.>`
-        }
-    ],
+		res.send({
+			text: searchText,
+			attachments: [{
+					color: '#02B0D8',
+					text: `${searchItems.join('\n')}\n<${gitHubSearchURL}|Search through all results here.>`
+      }],
 			channel: slackChannel, response_type: 'in_channel'})
 	})
 	.catch(next)
@@ -162,9 +162,15 @@ router
 			searchItems.push(`${i+1}. <${item.htmlUrl}|${item.fullName}>: *${item.stars}* stars, language: ${item.language},\n_${item.description}_`)
 		}
 
-		const searchText = `The five most popular projects in the last week are:\n${searchItems.join('\n')}\n<${gitHubSearchURL}|Search through all results here.>`
+		const searchText = `The five most popular projects in the last week are:\n>`
 		// response back to Slack
-		res.send({text: searchText, channel: slackChannel, response_type: 'in_channel'})
+		res.send({
+			text: searchText,
+			attachments: [{
+					color: '#02B0D8',
+					text: `${searchItems.join('\n')}\n<${gitHubSearchURL}|Search through all results here.>`
+      }],
+			channel: slackChannel, response_type: 'in_channel'})
 	})
 	.catch(next)
 })
