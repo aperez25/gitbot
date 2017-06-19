@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const octokat = require('octokat')
 const moment = require('moment')
+const Promise = require("bluebird")
 const gitHubId = process.env.GH_CLIENT_ID
 const gitHubSecret = process.env.GH_CLIENT_SECRET
 const gitHubToken = process.env.GH_TOKEN
@@ -61,17 +62,17 @@ router
 			}
 		})
 	}).then(filteredItems => {
-		filteredItems.forEach(item => {
-			repo.commits.fetch(item.sha)
+		const itemURLS = filteredItems.map(item => {
+			return repo.commits.fetch(item.sha)
+		})
+		Promise.all(itemURLS)
 			.then(object => {
 				index = branches.indexOf(object.sha)
 				branches[index].url = object.html_url
 				formattedBranches = branches.map(branch =>
 			`<${branch.url}|${branch.name}>`)
 			})
-			.catch(next)
 		})
-	})
 	.then(branchURLs => {
 		console.log(branchURLs) //RETURNING UNDEFINED :O
 		branchList = `Here is a list of ${repoName}\'s current branches:\n${branchURLs.join('\n')}`
@@ -79,7 +80,6 @@ router
 		res.send({text: branchList, channel: slackChannel, response_type: 'in_channel'})
 	})
 	.catch(next)
-
 })
 
 .post('/searchrepos', (req, res, next) => {
@@ -138,13 +138,11 @@ router
 			const item = ({
 				fullName: searchResults.items[i].fullName,
 				htmlUrl: searchResults.items[i].htmlUrl,
-				forks: searchResults.items[i].forks,
+				description: searchResults.items[i].description,
 				language: searchResults.items[i].language,
-				stars: searchResults.items[i].stargazers_count,
-				lastUpdated: new Date(searchResults.items[i].updatedAt),
-				unixDate: new Date(searchResults.items[i].updatedAt).getTime() / 1000
+				stars: searchResults.items[i].stargazersCount,
 			})
-			searchItems.push(`${i}. <${item.htmlUrl}|${item.fullName}>: ${item.forks} forks, ${item.stars} stars, language: ${item.language}, last updated: <!date^${item.unixDate}^{date_short_pretty}|${item.lastUpdated}>`)
+			searchItems.push(`${i}. <${item.htmlUrl}|${item.fullName}>: ${item.stars} stars, language: ${item.language}, description: ${item.description}`)
 		}
 
 		const searchText = `The five most popular projects in the last week are: *${req.body.text}*:\n${searchItems.join('\n')}\n<${gitHubSearchURL}|Search through all results here.>`
