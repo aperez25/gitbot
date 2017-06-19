@@ -60,10 +60,10 @@ router
 	})
 	.then(filteredBranches =>{
 		filteredBranches.forEach(b => {
-			repo.commit.fetch(b.sha) //was searching commits not commit :O
+			repo.commits(b.sha).fetch() //was searching commits not commit :O
 			.then(object => {
-					const formattedBranch = {name: b.name, url: object.html_url}
-					branches.push(`<${formattedBranch.url}|${formattedBranch.name}>`)
+				const formattedBranch = {name: b.name, url: object.html_url}
+				branches.push(`<${formattedBranch.url}|${formattedBranch.name}>`)
 			})
 		})
 	})
@@ -80,7 +80,7 @@ router
 			attachments: [{
 				color: '#02B0D8',
 				text: `${branches.join('\n')}`,
-				mrkdwn_in: 'text'
+				mrkdwn_in: ['text']
       }],
 		channel: slackChannel, response_type: 'in_channel'})
 	})
@@ -128,7 +128,7 @@ router
 			attachments: [{
 					color: '#02B0D8',
 					text: `${searchItems.join('\n')}\n<${gitHubSearchURL}|Search through all results here.>`,
-					mrkdwn_in: 'text'
+					mrkdwn_in: ['text']
       }],
 			channel: slackChannel, response_type: 'in_channel'})
 	})
@@ -165,7 +165,7 @@ router
 			attachments: [{
 					color: '#02B0D8',
 					text: `${searchItems.join('\n')}\n<${gitHubSearchURL}|Search through all results here.>`,
-					mrkdwn_in: 'text'
+					mrkdwn_in: ['text']
       }],
 			channel: slackChannel, response_type: 'in_channel'})
 	})
