@@ -1,7 +1,7 @@
 # GitBot: Chatbot & Slack app
 ## For all things Git & GitHub
 
-### I'm alive! :arrow_right: [See me in action](https://gitbotchat.herokuapp.com/commands) :arrow_left:
+### I'm alive! :arrow_right: [See me in action](https://gitbotchat.herokuapp.com/) :arrow_left:
 
 **What I can do on the site:**
 * Answer basic questions about Git and GitHub
