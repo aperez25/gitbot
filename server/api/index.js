@@ -87,12 +87,13 @@ router
 	repoRequest = req.body.text.split(', '),
 	gitHubSearch = repoRequest[0],
 	searchLanguage = repoRequest[1] || '',
-	searchTopic = repoRequest[2] || null
-	console.log(searchLanguage)
+
+	searchTopics = repoRequest[2] || ''
+
 	let gitHubSearchURL = ''
 
-	if (searchTopic)
-  	gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${gitHubSearch}+${encodeURI(`'topic:'${searchTopic}`)}&l=${searchLanguage}`
+	if (searchTopics !== '')
+  	gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${gitHubSearch}+${encodeURI('topic:', searchTopics)}&l=${searchLanguage}`
 	else
 		gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${gitHubSearch}&l=${searchLanguage}`
 	// get gitHub results - NEED TO SORT BY BEST MATCH
