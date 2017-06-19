@@ -69,6 +69,7 @@ router
 		res.send({text: branchList, channel: slackChannel, response_type: 'in_channel'})
 	})
 	.catch(next)
+	})
 })
 
 .post('/searchrepos', (req, res, next) => {
