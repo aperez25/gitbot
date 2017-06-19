@@ -58,34 +58,29 @@ router
 			}
 		})
 	})
-	// .then(filteredItems =>{
-	// 	repo.commits.fetch()
-	// 		.then(object => {
-	// 			// object is an array - so need to get items[i].html_url
-	// 			return object.filter(item => {
-	// 					var obj = branches.filter(b => {
-  //   					return b.sha === item.sha
-	// 					})[0];
-	// 				if (obj){
-	// 					var formattedBranch = {name: obj.name, url: item.html_url}
-	// 						return `<${formattedBranch.url}|${formattedBranch.name}>`
-	// 				}
-	// 			})
-	// 		})
-	// 	})
+	.then(filteredBranches =>{
+		filteredBranches.forEach(b => {
+			repo.commit.fetch(b.sha) //was searching commits not commit :O
+			.then(object => {
+					const formattedBranch = {name: b.name, url: object.html_url}
+					branches.push(`<${formattedBranch.url}|${formattedBranch.name}>`)
+			})
+		})
+	})
 	.then(filteredBranches => {
-				branches = filteredBranches.map(branch => {
-					const branchRef = branch.ref.split('/'),
-					branchName = branchRef[3] ? branchRef[3] : branchRef[2]
-					// branches.push({name: branchName, sha: branch.sha})
-					return branchName
-				})
+				// branches = filteredBranches.map(branch => {
+				// 	const branchRef = branch.ref.split('/'),
+				// 	branchName = branchRef[3] ? branchRef[3] : branchRef[2]
+				// 	// branches.push({name: branchName, sha: branch.sha})
+				// 	return branchName
+				// })
 		branchList = `Here is a list of ${repoName}\'s current branches:\n`
 	// send a response back to slack
 		res.send({text: branchList,
 			attachments: [{
 				color: '#02B0D8',
-				text: `${branches.join('\n')}`
+				text: `${branches.join('\n')}`,
+				mrkdwn_in: 'text'
       }],
 		channel: slackChannel, response_type: 'in_channel'})
 	})
@@ -132,7 +127,8 @@ router
 			text: searchText,
 			attachments: [{
 					color: '#02B0D8',
-					text: `${searchItems.join('\n')}\n<${gitHubSearchURL}|Search through all results here.>`
+					text: `${searchItems.join('\n')}\n<${gitHubSearchURL}|Search through all results here.>`,
+					mrkdwn_in: 'text'
       }],
 			channel: slackChannel, response_type: 'in_channel'})
 	})
@@ -168,7 +164,8 @@ router
 			text: searchText,
 			attachments: [{
 					color: '#02B0D8',
-					text: `${searchItems.join('\n')}\n<${gitHubSearchURL}|Search through all results here.>`
+					text: `${searchItems.join('\n')}\n<${gitHubSearchURL}|Search through all results here.>`,
+					mrkdwn_in: 'text'
       }],
 			channel: slackChannel, response_type: 'in_channel'})
 	})
