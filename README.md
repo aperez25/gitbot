@@ -23,4 +23,4 @@
 * [Slack API](https://api.slack.com/slack-apps)
 * [GitHub API](https://developer.github.com/v3/)
 * [Bootstrap](http://getbootstrap.com/)
-* See the package.json[https://github.com/aperez25/gitbot/blob/master/package.json] for more details!
+* See the [package.json](https://github.com/aperez25/gitbot/blob/master/package.json) for more details!
