@@ -1,8 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import axios from 'axios'
-import {Link} from 'react-router'
-import Chatbox from './chatbox'
+import {Link} from 'react-router-dom'
+import Response from './response'
 
 class Chat extends React.Component {
   render() {
@@ -12,14 +12,14 @@ class Chat extends React.Component {
           e.preventDefault()
           gitBotRequest(e.target.question.value)
         }}>
-          <textarea id="textbox" type="question" name="question" required rows="3" cols="50"/>
+          <textarea className="form-control" id="textbox" type="question" name="question" required />
           <br />
-          <button type="submit" className="btn btn-primary">Speak</button>
+          <button type="submit" className="btn btn-primary btn-block"><i className="fa fa-cogs" aria-hidden="true"></i>Chat with GitBot</button>
         </form>
         <div id="spokenResponse" className="spoken-response" />
         <div className="spoken-response__text" />
       <div>
-      { }
+      <p> Prefer to chat with GitBot in realtime? <Link to='/chatbox'>Click here!</Link></p>
       </div>
       </div>
     )
@@ -28,7 +28,7 @@ class Chat extends React.Component {
 
 const gitBotRequest = (question) => {
     axios.post('/api/apiai', {question})
-    .then(res => console.log(res.data))
+    .then(res => Response.props = res.data)
     // .then(user => dispatch(create(user)))
     // .then(() => browserHistory.push('/products'))
     .catch(err => console.error(`Creating new account unsuccesful`, err))
