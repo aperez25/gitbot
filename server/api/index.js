@@ -13,12 +13,11 @@ const octo = new octokat({
 router
 
 .post('/gitcommit', (req, res, next) => {
-	console.log('~~~~~~HERE IS THE BODY ~~~~~: ', req.body)
-	const slackChannel = req.body.channel_id
-	const gitRequest = req.body.text.split(' ')
+	const slackChannel = req.body.channel_id,
 	// capture the username & reponame
-	const userName = gitRequest[0]
-	const repoName = gitRequest[1]
+	gitRequest = req.body.text.split(' '),
+	userName = gitRequest[0],
+	repoName = gitRequest[1]
 	// fetches the repo's commit history
 	octo.repos(userName, repoName)
 	.commits.fetch({"sha": "master"})
@@ -40,14 +39,14 @@ router
 })
 
 .post('/gitbranches', (req, res, next) => {
-	const slackChannel = req.body.channel_id
+	const slackChannel = req.body.channel_id,
 	// if (req.body.command === '/gitlastcommit') {
-	const gitRequest = req.body.text.split(' ')
+	gitRequest = req.body.text.split(' '),
 	// capture the username & reponame
-	const userName = gitRequest[0]
-	const repoName = gitRequest[1]
+	userName = gitRequest[0],
+	repoName = gitRequest[1]
 	// fetches the repo's commit history
-	const repo = octo.repos(userName, repoName)
+	repo = octo.repos(userName, repoName)
 	repo.git.refs.fetch()
 	//get the data we need
 	.then(response => {
@@ -60,7 +59,7 @@ router
 		const branches = refs.map(filteredItems => {
 			const itemRef = filteredItems.ref.split('/'),
 			itemName = itemRef[3] ? itemRef[3] : itemRef[2]
-			itemURL = octo.repo.commits.fetch(filteredItems.sha)
+			itemURL = repo.commits.fetch(filteredItems.sha)
 				.then(object => object.html_url)
 			return `<${itemURL}|${itemName}>`
 		})
