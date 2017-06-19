@@ -88,6 +88,7 @@ router
 	gitHubSearch = repoRequest[0],
 	searchLanguage = repoRequest[1] || '',
 	searchTopics = repoRequest.slice(2).join(' ') || null
+	console.log(searchLanguage)
 	let gitHubSearchURL = ''
 
 	if (searchTopics)
@@ -96,8 +97,7 @@ router
 		gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${gitHubSearch}&l=${searchLanguage}`
 	// get gitHub results
 	octo.search.repositories.fetch({
-		q: gitHubSearch,
-		language: searchLanguage,
+		q: `${gitHubSearch}+language:${searchLanguage}`,
 		topic: searchTopics
 	})
 	.then(searchResults => {
