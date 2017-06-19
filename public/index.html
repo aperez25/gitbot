@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <!--local CSS dependencies-->
-  <link rel='stylesheet' href='/bootstrap/dist/css/bootstrap.css' />
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/landing-page.css" rel="stylesheet">
+<!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <link rel="stylesheet" href="styles.css" />
   <script src="bundle.js" defer></script>
   <link rel="icon" type="image/x-icon" href="favicon.ico"/>
@@ -15,7 +20,18 @@
 <title>Gitbot</title>
 
 <body>
-  <div id="app" class="container-fluid"></div>
+
+
+  <div id="app" class="site-wrapper"></div>
+  <footer className="footer">
+    <div className="container">
+      <p> Add me to your Slack channel...I'm a lot more fun there!</p>
+      <a href="https://slack.com/oauth/authorize?scope=incoming-webhook,commands,bot&client_id=198771643940.198649327571"><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
+      <p className="text-muted">Made by a <a href="https://github.com/aperez25/gitbot>"<span class="glyphicons glyphicons-user"></span></a> with <span className="glyphicon glyphicon-heart"></span></p>
+  </footer>
 </body>
-<script src="/bootstrap/dist/jquery/jquery.js"></script>
+<script src="jquery-3.2.1.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </html>
+
+

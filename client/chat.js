@@ -1,8 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import axios from 'axios'
-import {Link} from 'react-router'
-import Chatbox from './chatbox'
+import {Link} from 'react-router-dom'
 
 class Chat extends React.Component {
   render() {
@@ -12,14 +11,14 @@ class Chat extends React.Component {
           e.preventDefault()
           gitBotRequest(e.target.question.value)
         }}>
-          <textarea id="textbox" type="question" name="question" required rows="3" cols="50"/>
+          <textarea className="form-control" id="textbox" type="question" name="question" required />
           <br />
-          <button type="submit" className="btn btn-primary">Speak</button>
+          <button type="submit" className="btn btn-primary btn-block"><i className="fa fa-cogs" aria-hidden="true"></i>Chat with GitBot</button>
         </form>
         <div id="spokenResponse" className="spoken-response" />
         <div className="spoken-response__text" />
       <div>
-      { }
+      <p> Prefer to chat with GitBot in realtime? <Link to='/chatbox'>Click here!</Link></p>
       </div>
       </div>
     )

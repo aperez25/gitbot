@@ -1,15 +1,10 @@
 import React from 'react'
 
 const About = () => (
-    <div className="col-lg-6">
-      <h1 className="header">Hi, I'm GitBot!</h1>
-        <h2> Chat or talk with me about Git and GitHub</h2>
-        <p>Here are some things I can do:</p>
-        <ul>
-          <li>Answer your questions</li>
-          <li>Help you with Git and GitHub workflows</li>
-          <li>Chat with you...I get lonely :(</li>
-        </ul>
+    <div className="inner cover">
+      <img src="https://cdn-images-1.medium.com/max/600/1*Lp2rS78GlhA-a4B81wlHfw.png" className="img-circle"/>
+      <h1 className="cover-heading">Hi, I'm GitBot!</h1>
+        <p className="lead"> Ask me your questions about Git & <a href="https://github.com">GitHub</a></p>
     </div>
   )
 

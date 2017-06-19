@@ -1,14 +1,13 @@
 import React from 'react'
 import About from './about'
+import { Route, Switch, Link } from 'react-router-dom'
 import Chat from './chat'
 import Chatbox from './chatbox'
-import Slack from './slackbutton'
 
 const Root = () => (
-  <div className="row">
+  <div className="container">
     <About />
-    <Chat />
-    <Slack />
+    <p className="lead"> Let's get started! Would you like to <Link to='/chatbox'>chat in realtime</Link> or <Link to="/chat">see formatted text?</Link> You can toggle at any time!</p>
   </div>
 )
 
