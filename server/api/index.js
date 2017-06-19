@@ -97,7 +97,7 @@ router
 			searchItems.push(`${i}. <${item.htmlUrl}|${item.fullName}>: ${item.forks} forks,  language: ${item.language}, last updated: <!date^${item.unixDate}^{date_short_pretty}|${item.lastUpdated}>`)
 		}
 
-		const searchText = `For your search *${req.body.text}*, there are *${searchResults.totalCount}* results. The first five are:\n${searchItems.join('\n')}\n<${searchResults.url}|Search through all results here.>`
+		const searchText = `For your search *${req.body.text}*, there are *${searchResults.totalCount}* results. The first five are:\n${searchItems.join('\n')}\n<${gitHubSearchURL}|Search through all results here.>`
 		// response back to Slack
 		res.send({text: searchText, channel: slackChannel, response_type: 'in_channel'})
 	})
