@@ -53,11 +53,12 @@ router
 	.then(response => {
 		// order the references
 		return response.items.filter(item => {
-			if (item.ref.startsWith('refs/heads'))
+			if (item.ref.startsWith('refs/heads')) {
 				const objectRef = object.ref.split('/'),
 				objectName = objectRef[3] ? objectRef[3] : objectRef[2]
-			branches.push({name: objectName, sha: item.sha, url: ''})
-			return item
+				branches.push({name: objectName, sha: item.sha, url: ''})
+				return item
+			}
 		})
 	}).then(filteredItems => {
 		filteredItems.forEach(item => {
