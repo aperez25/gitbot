@@ -43,8 +43,8 @@ router
 	gitRequest = req.body.text.split(' '),
 	// capture the username & reponame
 	userName = gitRequest[0],
-	repoName = gitRequest[1],
-	branches = [],
+	repoName = gitRequest[1]
+	let branches = [],
 	formattedBranches = []
 	// fetches the repo's commit history
 	repo = octo.repos(userName, repoName)
@@ -62,14 +62,14 @@ router
 			}
 		})
 	}).then(filteredItems => {
-		return  filteredItems.map(item => {
+		return filteredItems.map(item => {
 			return repo.commits.fetch(item.sha)
 		})
 	})
 	.then(itemPromises =>
 		Promise.all(itemPromises)
 			.then(object => {
-				console.log('got to objects: ', object.html_url)
+				console.log('got to objects: ', object)
 				formattedBranches = branches.map(item => {
 					branch = {name: item.name, url: object.html_url}})
 				return `<${branch.url}|${branch.name}>`
@@ -89,12 +89,12 @@ router
 	gitHubSearch = repoRequest[0],
 	searchLanguage = repoRequest[1] || '',
 
-	searchTopics = repoRequest[2] || ''
+	searchTopic = repoRequest[2] || ''
 
 	let gitHubSearchURL = ''
 
-	if (searchTopics !== '')
-  	gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${gitHubSearch}+${encodeURI('topic:', searchTopics)}&l=${searchLanguage}`
+	if (searchTopic !== '')
+  	gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${gitHubSearch}+${encodeURI('topic:', searchTopic)}&l=${searchLanguage}`
 	else
 		gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${gitHubSearch}&l=${searchLanguage}`
 	// get gitHub results - NEED TO SORT BY BEST MATCH
@@ -143,10 +143,10 @@ router
 				language: searchResults.items[i].language,
 				stars: searchResults.items[i].stargazersCount,
 			})
-			searchItems.push(`${i}. <${item.htmlUrl}|${item.fullName}>: ${item.stars} stars, language: ${item.language}, description: ${item.description}`)
+			searchItems.push(`${i}. <${item.htmlUrl}|${item.fullName}>: *${item.stars}* stars, language: ${item.language},\ndescription: _${item.description}_`)
 		}
 
-		const searchText = `The five most popular projects in the last week are: *${req.body.text}*:\n${searchItems.join('\n')}\n<${gitHubSearchURL}|Search through all results here.>`
+		const searchText = `The five most popular projects in the last week are:\n${searchItems.join('\n')}\n<${gitHubSearchURL}|Search through all results here.>`
 		// response back to Slack
 		res.send({text: searchText, channel: slackChannel, response_type: 'in_channel'})
 	})
