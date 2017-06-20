@@ -8,7 +8,7 @@ const Commands = () => (
             <div className = "input-group">
                <div className = "input-group-btn">
                   <button type = "button" className = "btn btn-default dropdown-toggle"
-                     data-toggle = "dropdown">
+                     data-toggle = "dropdown" role="menuitem">
                      DropdownMenu
                      <span className = "caret"></span>
                   </button>

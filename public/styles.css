@@ -32,9 +32,12 @@ body {
 
 /* Links */
 a,
-a:focus,
-a:hover {
+a:focus {
   color: var(--cerulean);
+}
+
+a:hover {
+  color: var(--breaker-bay);
 }
 
 /* Custom default button */
@@ -67,17 +70,7 @@ li {
   list-style-type: none;
 }
 
-.slack {
-  color: var(--athens-gray)
-}
 
-#mygithub {
-  color: var(--koromiko)
-}
-
-#gitbotresponse {
-  padding: 20px;
-}
 /* Extra markup and styles for table-esque vertical and horizontal centering */
 .site-wrapper {
   display: table;
@@ -101,6 +94,25 @@ li {
   padding: 30px;
 }
 
+/*
+ * Element specific styling
+ */
+
+.slack {
+  color: var(--athens-gray)
+}
+
+#mygithub {
+  color: var(--athens-gray)
+}
+
+#gitbotresponse {
+  padding: 20px;
+}
+
+#chatmarkdown {
+
+}
 
 /*
  * Header
