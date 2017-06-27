@@ -2,6 +2,10 @@ const router = require('express').Router()
 const octokat = require('octokat')
 const moment = require('moment')
 const Promise = require("bluebird")
+import {commitFormatter,
+	URLFormatter,
+	searchFormatter,
+	popularFormatter } from './formatter'
 const gitHubId = process.env.GH_CLIENT_ID
 const gitHubSecret = process.env.GH_CLIENT_SECRET
 const gitHubToken = process.env.GH_TOKEN
@@ -20,28 +24,18 @@ router
 	// fetches the repo's commit history
 	octo.repos(userName, repoName)
 	.commits.fetch({"sha": "master"})
-	//get the data we need
+	// format and send the response
 	.then(response => {
-		console.log(response)
-		const commit = response.items[0].commit
-		const author = commit.author.name,
-					email = commit.author.email
-					date = new Date(commit.author.date)
-					unixDate = date.getTime() / 1000,
-					message = commit.message
-					//link if broken
-					url = response.items[0].htmlUrl
-		const lastCommit = `<${url}|The last commit> was made <!date^${unixDate}^{date_short_pretty} at {time}|${date}>, by ${author}: "${message}".`
-		return res.send({text: lastCommit, channel: slackChannel, response_type: 'in_channel' })
+		const commit = commitFormatter(response)
+		return res.send({text: commit, channel: slackChannel, response_type: 'in_channel' })
 	})
 	.catch(next)
 })
 
 .post('/gitbranches', (req, res, next) => {
 	const slackChannel = req.body.channel_id,
-	// if (req.body.command === '/gitlastcommit') {
-	gitRequest = req.body.text.split(' '),
 	// capture the username & reponame
+	gitRequest = req.body.text.split(' '),
 	userName = gitRequest[0],
 	repoName = gitRequest[1]
 	let branches = []
@@ -89,48 +83,30 @@ router
 
 .post('/searchrepos', (req, res, next) => {
 	const slackChannel = req.body.channel_id,
-	repoRequest = req.body.text.split(', '),
-	gitHubSearch = repoRequest[0],
-	searchLanguage = repoRequest[1] || '',
+  request = array.body.text.split(', '),
+	gitHubSearch = request[0],
+	searchLanguage = request[1] || '',
+	searchTopic = request[2] || ''
+	gitURL = URLFormatter(gitHubSearch, searchLanguage, searchTopic)
 
-	searchTopic = repoRequest[2] || ''
-
-	let gitHubSearchURL = ''
-
-	if (searchTopic !== '')
-  	gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${gitHubSearch}+${encodeURI('topic:', searchTopic)}&l=${searchLanguage}`
-	else
-		gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${gitHubSearch}&l=${searchLanguage}`
-	// get gitHub results - NEED TO SORT BY BEST MATCH
 	octo.search.repositories.fetch({
 		q: `${gitHubSearch}+language:${searchLanguage}`,
 		topic: searchTopic,
 		order: 'desc'
 	})
 	.then(searchResults => {
-		const searchItems = []
-		for (var i = 0; i <= 4; i++) {
-			const item = ({
-				fullName: searchResults.items[i].fullName,
-				htmlUrl: searchResults.items[i].htmlUrl,
-				forks: searchResults.items[i].forks,
-				language: searchResults.items[i].language,
-				lastUpdated: new Date(searchResults.items[i].updatedAt),
-				unixDate: new Date(searchResults.items[i].updatedAt).getTime() / 1000
-			})
-			searchItems.push(`${i+1}. <${item.htmlUrl}|${item.fullName}>: ${item.forks} forks,  language: ${item.language}, last updated: <!date^${item.unixDate}^{date_short_pretty}|${item.lastUpdated}>`)
-		}
-
+		const resultsList = searchFormatter(searchResults)
 		const searchText = `Here are the first five results for your search *${req.body.text}*:`
 		// response back to Slack
 		res.send({
 			text: searchText,
 			attachments: [{
 					color: '#02B0D8',
-					text: `${searchItems.join('\n')}\n<${gitHubSearchURL}|See all results here>`,
+					text: `${resultsList}\n<${gitURL}|See all results here>`,
 					mrkdwn_in: ['text']
       }],
-			channel: slackChannel, response_type: 'in_channel'})
+			channel: slackChannel,
+			response_type: 'in_channel'})
 	})
 	.catch(next)
 })
@@ -146,25 +122,14 @@ router
 		order: 'desc'
 	})
 	.then(searchResults => {
-		const searchItems = []
-		for (var i = 0; i <= 4; i++) {
-			const item = ({
-				fullName: searchResults.items[i].fullName,
-				htmlUrl: searchResults.items[i].htmlUrl,
-				description: searchResults.items[i].description,
-				language: searchResults.items[i].language,
-				stars: searchResults.items[i].stargazersCount,
-			})
-			searchItems.push(`${i+1}. <${item.htmlUrl}|${item.fullName}>: *${item.stars}* stars, language: ${item.language}\n_${item.description}_`)
-		}
-
+		const popularList = popularFormatter(searchResults)
 		const searchText = `The five most popular projects in the last week are:\n>`
 		// response back to Slack
 		res.send({
 			text: searchText,
 			attachments: [{
 					color: '#02B0D8',
-					text: `${searchItems.join('\n')}\n<${gitHubSearchURL}|See all results here>`,
+					text: `${popularList}\n<${gitHubSearchURL}|See all results here>`,
 					mrkdwn_in: ['text']
       }],
 			channel: slackChannel, response_type: 'in_channel'})
