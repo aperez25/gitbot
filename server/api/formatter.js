@@ -1,4 +1,4 @@
-export const commitFormatter = (array) => {
+const commitFormatter = (array) => {
   const commit = array.items[0].commit,
     author = commit.author.name,
     email = commit.author.email
@@ -10,7 +10,7 @@ export const commitFormatter = (array) => {
   return `<${url}|The last commit> was made <!date^${unixDate}^{date_short_pretty} at {time}|${date}>, by ${author}: "${message}".`
 }
 
-export const URLFormatter = (search, lang, topic) => {
+const URLFormatter = (search, lang, topic) => {
 
 	if (topic !== '')
   	return `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${search}+${encodeURI('topic:', topic)}&l=${lang}`
@@ -18,7 +18,7 @@ export const URLFormatter = (search, lang, topic) => {
 		return `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${search}&l=${lang}`
 }
 
-export const searchFormatter = array => {
+const searchFormatter = array => {
   const searchItems = []
   for (var i = 0; i <= 4; i++) {
     const item = ({
@@ -34,7 +34,7 @@ export const searchFormatter = array => {
   return searchItems.join('\n')
 }
 
-export const popularFormatter = array => {
+const popularFormatter = array => {
   const searchItems = []
   for (var i = 0; i <= 4; i++) {
     const item = ({
@@ -47,4 +47,11 @@ export const popularFormatter = array => {
     searchItems.push(`${i+1}. <${item.htmlUrl}|${item.fullName}>: *${item.stars}* stars, language: ${item.language}\n_${item.description}_`)
   }
   return searchItems.join('\n')
+}
+
+module.exports = {
+  URL: URLFormatter,
+  search: searchFormatter,
+  commit: commitFormatter,
+  popular: popularFormatter
 }

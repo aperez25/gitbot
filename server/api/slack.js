@@ -2,10 +2,7 @@ const router = require('express').Router()
 const octokat = require('octokat')
 const moment = require('moment')
 const Promise = require("bluebird")
-import {commitFormatter,
-	URLFormatter,
-	searchFormatter,
-	popularFormatter } from './formatter'
+const format = require ('./formatter')
 const gitHubId = process.env.GH_CLIENT_ID
 const gitHubSecret = process.env.GH_CLIENT_SECRET
 const gitHubToken = process.env.GH_TOKEN
@@ -26,7 +23,7 @@ router
 	.commits.fetch({"sha": "master"})
 	// format and send the response
 	.then(response => {
-		const commit = commitFormatter(response)
+		const commit = format.commit(response)
 		return res.send({text: commit, channel: slackChannel, response_type: 'in_channel' })
 	})
 	.catch(next)
@@ -87,7 +84,7 @@ router
 	gitHubSearch = request[0],
 	searchLanguage = request[1] || '',
 	searchTopic = request[2] || ''
-	gitURL = URLFormatter(gitHubSearch, searchLanguage, searchTopic)
+	gitURL = format.URL(gitHubSearch, searchLanguage, searchTopic)
 
 	octo.search.repositories.fetch({
 		q: `${gitHubSearch}+language:${searchLanguage}`,
@@ -95,7 +92,7 @@ router
 		order: 'desc'
 	})
 	.then(searchResults => {
-		const resultsList = searchFormatter(searchResults)
+		const resultsList = format.search(searchResults)
 		const searchText = `Here are the first five results for your search *${req.body.text}*:`
 		// response back to Slack
 		res.send({
@@ -122,7 +119,7 @@ router
 		order: 'desc'
 	})
 	.then(searchResults => {
-		const popularList = popularFormatter(searchResults)
+		const popularList = format.popular(searchResults)
 		const searchText = `The five most popular projects in the last week are:\n>`
 		// response back to Slack
 		res.send({
