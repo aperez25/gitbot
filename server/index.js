@@ -20,7 +20,10 @@ app
 
 .use(express.static(path.join(__dirname,
  '../public')))
+.use(express.static(path.join(__dirname, '..', 'node_modules/jquery/dist')))
+.use(express.static(path.join(__dirname, '..', 'node_modules/bootstrap/dist')))
 .use('/api', require('./api'))
+
 
 .get('/*', function (req, res) {
   res.redirect('/')

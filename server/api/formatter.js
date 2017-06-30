@@ -10,10 +10,14 @@ const commitFormatter = (array) => {
   return `<${url}|The last commit> was made <!date^${unixDate}^{date_short_pretty} at {time}|${date}>, by ${author}: "${message}".`
 }
 
-const URLFormatter = (search, lang, topic) => {
+const userFormatter = request => {
+  gitRequest = request.body.text.split(' ')
+  return { name: gitRequest[0], repo: gitRequest[1]}
+}
 
+const URLFormatter = (search, lang, topic) => {
 	if (topic !== '')
-  	return `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${search}+${encodeURI('topic:', topic)}&l=${lang}`
+  	return `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${search}+${encodeURI('topic:',topic)}&l=${lang}`
 	else
 		return `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${search}&l=${lang}`
 }
@@ -50,6 +54,7 @@ const popularFormatter = array => {
 }
 
 module.exports = {
+  user: userFormatter,
   URL: URLFormatter,
   search: searchFormatter,
   commit: commitFormatter,
