@@ -112,9 +112,11 @@ li {
 
 .dropdownmenu {
   float: center;
-  font-weight: none
 }
-
+.dropdownLink {
+  text-shadow: none;
+  color: var(--flamingo)
+}
 /*
  * Header
  */
