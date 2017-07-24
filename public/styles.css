@@ -110,8 +110,9 @@ li {
   padding: 20px;
 }
 
-#chatmarkdown {
-
+.dropdownmenu {
+  float: center;
+  font-weight: none
 }
 
 /*
