@@ -3,7 +3,7 @@
 const api = module.exports = require('express').Router()
 
 api
-  .use('/slack', require('./slack'))
+  .use('/github', require('./github'))
   .use('/apiai', require('./site'))
 
 // No routes matched? 404.

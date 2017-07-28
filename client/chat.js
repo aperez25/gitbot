@@ -22,8 +22,8 @@ export default class Chat extends React.Component {
 
   render() {
     return (
-      <div className="chat">
-        <form onSubmit={this.handleSubmit}>
+      <div className>
+        <form id="chat" onSubmit={this.handleSubmit}>
           <textarea className="form-control" id="textbox" type="question" name="question" required />
           <br />
           <button type="submit" className="btn btn-primary btn-block">Chat with GitBot</button>

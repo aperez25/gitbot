@@ -110,9 +110,23 @@ li {
   padding: 20px;
 }
 
-#chatmarkdown {
-
+#chat {
+  width: 50%;
+  display: inline-table
 }
+
+.form-control {
+  height: 110%
+}
+
+.dropdownmenu {
+  float: center;
+}
+.dropdownLink {
+  text-shadow: none;
+  color: var(--flamingo)
+}
+
 
 /*
  * Header

@@ -11,72 +11,52 @@ const octo = new octokat({
 
 router
 
-.post('/gitcommit', (req, res, next) => {
+.post('/commit', (req, res, next) => {
 	const slackChannel = req.body.channel_id,
-	// capture the username & reponame
 	gitRequest = req.body.text.split(' '),
 	userName = gitRequest[0],
 	repoName = gitRequest[1]
-	// fetches the repo's commit history
+
 	octo.repos(userName, repoName)
 	.commits.fetch({"sha": "master"})
-	//get the data we need
 	.then(response => {
-		console.log(response)
-		const commit = response.items[0].commit
-		const author = commit.author.name,
-					email = commit.author.email
-					date = new Date(commit.author.date)
-					unixDate = date.getTime() / 1000,
-					message = commit.message
-					//link if broken
-					url = response.items[0].htmlUrl
+		const commit = response.items[0].commit,
+			author = commit.author.name,
+			date = new Date(commit.author.date),
+			unixDate = date.getTime() / 1000,
+			message = commit.message,
+			url = response.items[0].htmlUrl
+
 		const lastCommit = `<${url}|The last commit> was made <!date^${unixDate}^{date_short_pretty} at {time}|${date}>, by ${author}: "${message}".`
+
 		return res.send({text: lastCommit, channel: slackChannel, response_type: 'in_channel' })
 	})
 	.catch(next)
 })
 
-.post('/gitbranches', (req, res, next) => {
+.post('/branches', (req, res, next) => {
 	const slackChannel = req.body.channel_id,
-	// if (req.body.command === '/gitlastcommit') {
 	gitRequest = req.body.text.split(' '),
-	// capture the username & reponame
 	userName = gitRequest[0],
 	repoName = gitRequest[1]
 	let branches = []
-	// fetches the repo's commit history
-	repo = octo.repos(userName, repoName)
 
-	repo.git.refs.fetch()
-	//get the data we need
+	octo.repos(userName, repoName).git.refs.fetch()
 	.then(response => {
-		// order the references
 		return response.items.filter(item => {
 			if (item.ref.startsWith('refs/heads')) {
 				return item
 			}
 		})
 	})
-	// .then(filteredBranches =>{
-	// 	filteredBranches.forEach(b => {
-	// 		repo.commits(b.sha).fetch() //was searching commits not commit :O
-	// 		.then(object => {
-	// 			const formattedBranch = {name: b.name, url: object.html_url}
-	// 			branches.push(`<${formattedBranch.url}|${formattedBranch.name}>`)
-	// 		})
-	// 	})
-	// })
 	.then(filteredBranches => {
 		branches = filteredBranches.map(branch => {
 			const branchRef = branch.ref.split('/'),
 			branchName = branchRef[3] ? branchRef[3] : branchRef[2]
-			// branches.push({name: branchName, sha: branch.sha})
 			return branchName
 		})
-		branchList = `Here is a list of ${repoName}\'s current branches:\n`
-	// send a response back to slack
-		res.send({text: branchList,
+
+		res.send({text: `Here is a list of ${repoName}\'s current branches:\n`,
 			attachments: [{
 				color: '#02B0D8',
 				text: `${branches.join('\n')}`,
@@ -92,7 +72,6 @@ router
 	repoRequest = req.body.text.split(', '),
 	gitHubSearch = repoRequest[0],
 	searchLanguage = repoRequest[1] || '',
-
 	searchTopic = repoRequest[2] || ''
 
 	let gitHubSearchURL = ''
@@ -101,7 +80,7 @@ router
   	gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${gitHubSearch}+${encodeURI('topic:', searchTopic)}&l=${searchLanguage}`
 	else
 		gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=${gitHubSearch}&l=${searchLanguage}`
-	// get gitHub results - NEED TO SORT BY BEST MATCH
+
 	octo.search.repositories.fetch({
 		q: `${gitHubSearch}+language:${searchLanguage}`,
 		topic: searchTopic,
@@ -121,10 +100,8 @@ router
 			searchItems.push(`${i+1}. <${item.htmlUrl}|${item.fullName}>: ${item.forks} forks,  language: ${item.language}, last updated: <!date^${item.unixDate}^{date_short_pretty}|${item.lastUpdated}>`)
 		}
 
-		const searchText = `Here are the first five results for your search *${req.body.text}*:`
-		// response back to Slack
 		res.send({
-			text: searchText,
+			text: `Here are the first five results for your search *${req.body.text}*:`,
 			attachments: [{
 					color: '#02B0D8',
 					text: `${searchItems.join('\n')}\n<${gitHubSearchURL}|See all results here>`,
@@ -137,11 +114,11 @@ router
 
 .post('/popular', (req, res, next) => {
 	const slackChannel = req.body.channel_id,
-	last7 = moment().subtract(7, 'days').format("YYYY-MM-DD")
-	let gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=created:${last7}`
+	last7Days = moment().subtract(7, 'days').format("YYYY-MM-DD")
+	let gitHubSearchURL = `https://github.com/search?utf8=%E2%9C%93&type=Repositories&q=created:${last7Days}`
 
 	octo.search.repositories.fetch({
-		q: `created:${last7}`,
+		q: `created:${last7Days}`,
 		sort: 'stars',
 		order: 'desc'
 	})
@@ -149,19 +126,17 @@ router
 		const searchItems = []
 		for (var i = 0; i <= 4; i++) {
 			const item = ({
-				fullName: searchResults.items[i].fullName,
-				htmlUrl: searchResults.items[i].htmlUrl,
+				name: searchResults.items[i].fullName,
+				url: searchResults.items[i].htmlUrl,
 				description: searchResults.items[i].description,
 				language: searchResults.items[i].language,
 				stars: searchResults.items[i].stargazersCount,
 			})
-			searchItems.push(`${i+1}. <${item.htmlUrl}|${item.fullName}>: *${item.stars}* stars, language: ${item.language}\n_${item.description}_`)
+			searchItems.push(`${i+1}. <${item.url}|${item.name}>: *${item.stars}* stars, language: ${item.language}\n_${item.description}_`)
 		}
 
-		const searchText = `The five most popular projects in the last week are:\n>`
-		// response back to Slack
 		res.send({
-			text: searchText,
+			text: `The five most popular projects in the last week are:\n>`,
 			attachments: [{
 					color: '#02B0D8',
 					text: `${searchItems.join('\n')}\n<${gitHubSearchURL}|See all results here>`,
