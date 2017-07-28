@@ -110,6 +110,15 @@ li {
   padding: 20px;
 }
 
+#chat {
+  width: 50%;
+  display: inline-table
+}
+
+.form-control {
+  height: 110%
+}
+
 .dropdownmenu {
   float: center;
 }
@@ -117,6 +126,8 @@ li {
   text-shadow: none;
   color: var(--flamingo)
 }
+
+
 /*
  * Header
  */
