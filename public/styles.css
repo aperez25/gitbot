@@ -119,15 +119,6 @@ li {
   height: 110%
 }
 
-.dropdownmenu {
-  float: center;
-}
-.dropdownLink {
-  text-shadow: none;
-  color: var(--flamingo)
-}
-
-
 /*
  * Header
  */

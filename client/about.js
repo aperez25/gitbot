@@ -9,7 +9,7 @@ const About = () => (
         <ul>
         <li><Link to='/chatbox'>Chat in realtime with GitBot</Link> for simple Q&A</li>
         <li id="chatmarkdown"><Link to="/chat">Exchange messages with GitBot</Link> for workflow questions like "How do I create a new project?"</li>
-        <li id="commands"><Link to="/commands">Preview the Slack commands</Link> with some cool gifs</li>
+        <li id="commands"><Link to="/commands">Preview the Slack commands</Link> with some sweet screenshots</li>
         </ul>
       </p>
     </div>
