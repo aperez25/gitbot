@@ -11,10 +11,14 @@
 **What I can do on Slack:**
 * All of the site functionality mentioned above
 * Four slash commands, never leave Slack again!: 
-  * **/gitpopular:** Fetches the most popular repo's for the past week
+  * **/gitpopular:** Fetches the most popular repo's for the past week:
+    * <img src="/public/images/gitpopular.png" />
   * **/gitlastcommit:** Fetches the last commit for a given GitHub username and repo
+    * <img src="/public/images/gitcommit.png" />
   * **/gitbranches:** Fetches all branches for a given repo
+    * <img src="/public/images/gitbranches.png" />
   * **/gitsearch:** search GitHub repos by query, language and topic! 
+   * <img src="/public/images/gitsearch.png" />
   
 **How I'm built:**
 * Javascript
